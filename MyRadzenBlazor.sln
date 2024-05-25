@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyRadzenBlazor", "MyRadzenBlazor\MyRadzenBlazor\MyRadzenBlazor.csproj", "{AC961C0B-96ED-4C66-A8F7-E223E41F3ED3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyRadzenBlazor.Client", "MyRadzenBlazor\MyRadzenBlazor.Client\MyRadzenBlazor.Client.csproj", "{3C9707D8-156C-47A2-A540-D8A66115E4CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC961C0B-96ED-4C66-A8F7-E223E41F3ED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC961C0B-96ED-4C66-A8F7-E223E41F3ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC961C0B-96ED-4C66-A8F7-E223E41F3ED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC961C0B-96ED-4C66-A8F7-E223E41F3ED3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C9707D8-156C-47A2-A540-D8A66115E4CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C9707D8-156C-47A2-A540-D8A66115E4CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C9707D8-156C-47A2-A540-D8A66115E4CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C9707D8-156C-47A2-A540-D8A66115E4CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8217DECE-2772-4D9A-B79D-AA67C0193BA8}
+	EndGlobalSection
+EndGlobal
