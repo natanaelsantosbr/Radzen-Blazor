@@ -1,7 +1,15 @@
 ﻿@page "/"
-
+@inject DialogService DialogService
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<RadzenButton Text="Hi" Click="@ButtonClicked"></RadzenButton>
+@code {
+    void ButtonClicked()
+    {
+        DialogService.Alert("Button clicked!"); 
+    }
+}
