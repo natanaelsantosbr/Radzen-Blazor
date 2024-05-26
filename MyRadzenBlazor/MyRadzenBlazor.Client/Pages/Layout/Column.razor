@@ -1,0 +1,85 @@
+﻿@page "/column"
+<PageTitle>Column</PageTitle>
+
+<RadzenText TextStyle="TextStyle.H4" TagName="TagName.H2">
+    Column  
+</RadzenText>
+<RadzenText TextStyle="TextStyle.Subtitle1" TagName="TagName.P" class="rz-pb-4">
+    Then RadzenColumn component is used within a RadzenRow to create a structured grid layout. Without the RadzenRow component, the <code>RadzenColumn </code>would not be rendered correctly.
+</RadzenText>
+<RadzenText TextStyle="TextStyle.Subtitle1">
+    RadzenColumn are positioned on a 12-column based responsive grid.
+</RadzenText>
+
+<RadzenRow class="rz-text-align-center rz-border-info-light" Gap="1rem">
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">1</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">2</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">3</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">4</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">5</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">6</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">7</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">8</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">9</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">10</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">11</RadzenColumn>
+    <RadzenColumn class="rz-background-color-danger-lighter rz-color-on-danger-lighter rz-py-5">12</RadzenColumn>
+</RadzenRow>
+
+<RadzenText Anchor="column#auto-layout-columns" TextStyle="TextStyle.H5" class="rz-pt-12">
+    Auto-layout columns
+</RadzenText>
+<RadzenText TextStyle="TextStyle.Body1" class="rz-mb-8">
+    If column <code>Size</code> is not specified, the column will take up the available space.
+</RadzenText>
+
+<RadzenRow class="rz-text-align-center rz-border-info-light" Gap="1rem">
+    <RadzenColumn class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-5">
+        Column 1 of 4
+    </RadzenColumn>
+    <RadzenColumn class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-5">
+        Column 2 of 4
+    </RadzenColumn>
+    <RadzenColumn class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-5">
+        Column 3 of 4
+    </RadzenColumn>
+    <RadzenColumn class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-5">
+        Column 4 of 4
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenText Anchor="column#column-sizes" TextStyle="TextStyle.H5" TagName="TagName.H2" class="rz-pt-12">
+    Column sizes
+</RadzenText>
+<RadzenText TextStyle="TextStyle.Body1" class="rz-mb-8">
+    When setting column <code>Size</code>, make sure that the total sum of all column sizes is not greater than 12. Otherwise, columns might wrap to a second row.
+</RadzenText>
+<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H4" class="rz-mt-5">One column with a predefined Size</RadzenText>
+<RadzenRow class="rz-text-align-center rz-border-info-light" Gap="1rem">
+    <RadzenColumn Size="4" class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-5">
+        Size="4"
+    </RadzenColumn>
+    <RadzenColumn class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-5">
+        Auto
+    </RadzenColumn>
+    <RadzenColumn class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-5">
+        Auto
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H4" class="rz-mt-5">All columns with a predefined Size</RadzenText>
+<RadzenRow class="rz-text-align-center rz-border-info-light" Gap="1rem">
+    <RadzenColumn Size="4" class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-2 rz-p-md-5">
+        Size="4"
+    </RadzenColumn>
+    <RadzenColumn Size="5" class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-2 rz-p-md-5">
+        Size="5"
+    </RadzenColumn>
+    <RadzenColumn Size="3" class="rz-background-color-info-lighter rz-color-on-info-lighter rz-p-2 rz-p-md-5">
+        Size="3"
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+
+}
