@@ -1,6 +1,7 @@
 ﻿@page "/login"
-@using MyRadzenBlazor.Client.Layout
 @layout EmptyLayout
+@inject NotificationService NotificationService
+@inject DialogService DialogService
 @inject NavigationManager NavigationManager
 
 <RadzenRow Gap="0" Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10" Style="width: 100%; max-width: 800px; overflow: hidden;">
@@ -16,35 +17,64 @@
             <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
                 Login
             </RadzenText>
-            <RadzenLogin AllowRegister="true" AllowResetPassword="true"
-                         Login=@(args => OnLogin(args, "Simple Login")) />
+            <RadzenTemplateForm Data=@("Localization")>
+                <RadzenLogin AllowRegister="true" AllowResetPassword="true"
+                             AllowRememberMe="true"
+                             LoginText="Entrar" UserText="Email" PasswordText="Senha"
+                             UserRequired="Email obrigatório"
+                             PasswordRequired="Senha obrigatória"
+                             RegisterText="Criar Conta"
+                             RegisterMessageText="Ainda não tem uma conta?"
+                             ResetPasswordText="Redefinir senha"
+                             RememberMeText="Lembrar de mim"
+                             Login=@(args => OnLogin(args, "Login with default values")) />
+            </RadzenTemplateForm>
         </RadzenCard>
     </RadzenColumn>
 </RadzenRow>
 
 
 @code {
-    private LoginModel model = new LoginModel();
+    string userName = "admin";
+    string password = "admin";
+    bool rememberMe = true;
 
-    void OnLogin(LoginArgs args, string name)
+    async void OnLogin(LoginArgs args, string name)
     {
-        Console.WriteLine($"{name} -> Username: {args.Username} and password: {args.Password}");
-        NavigationManager.NavigateTo("/");
-    }
+        Console.WriteLine($"{name} -> Username: {args.Username}, password: {args.Password}, remember me: {args.RememberMe}");
 
-    void OnRegister(string name)
-    {
-        Console.WriteLine($"{name} -> Register");
-    }
+        if (args.Username == userName && args.Password == password)
+        {
+            NotificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Summary = "Login Successful",
+                        Detail = $"Welcome {args.Username}!",
+                        Duration = 1000
+                    });
+        }
+        else
+        {
+            NotificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Login Failed",
+                        Detail = "Invalid username or password",
+                        Duration = 1000
+                    });
+        }
 
-    void OnResetPassword(string value, string name)
-    {
-        Console.WriteLine($"{name} -> ResetPassword for user: {value}");
-    }
-
-    public class LoginModel
-    {
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        if (args.Username == userName && args.Password == password)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            await DialogService.OpenAsync("Login Failed", ds => @<div>
+        <h3>Login Failed</h3>
+        <p>Invalid username or password</p>
+        <RadzenButton Text="Close" Click="() => ds.Close()" ButtonStyle="ButtonStyle.Danger" />
+    </div>);
+        }
     }
 }
