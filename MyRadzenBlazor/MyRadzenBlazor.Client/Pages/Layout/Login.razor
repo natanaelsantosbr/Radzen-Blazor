@@ -1,4 +1,7 @@
 ﻿@page "/login"
+@using MyRadzenBlazor.Client.Layout
+@layout EmptyLayout
+@inject NavigationManager NavigationManager
 
 <RadzenRow Gap="0" Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10" Style="width: 100%; max-width: 800px; overflow: hidden;">
     <RadzenColumn Size="12" SizeMD="6">
@@ -13,14 +16,35 @@
             <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
                 Login
             </RadzenText>
-            <RadzenTemplateForm Data=@("SimpleLogin") Action="http://www.google.com">
-                <RadzenLogin AllowRegister="false" AllowResetPassword="false" />
-            </RadzenTemplateForm>
+            <RadzenLogin AllowRegister="true" AllowResetPassword="true"
+                         Login=@(args => OnLogin(args, "Simple Login")) />
         </RadzenCard>
     </RadzenColumn>
 </RadzenRow>
 
 
 @code {
+    private LoginModel model = new LoginModel();
 
+    void OnLogin(LoginArgs args, string name)
+    {
+        Console.WriteLine($"{name} -> Username: {args.Username} and password: {args.Password}");
+        NavigationManager.NavigateTo("/");
+    }
+
+    void OnRegister(string name)
+    {
+        Console.WriteLine($"{name} -> Register");
+    }
+
+    void OnResetPassword(string value, string name)
+    {
+        Console.WriteLine($"{name} -> ResetPassword for user: {value}");
+    }
+
+    public class LoginModel
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+    }
 }
