@@ -1,5 +1,4 @@
 ﻿@page "/product-search"
-<PageTitle>Product Search </PageTitle>
 @using System.Linq
 @using MyRadzenBlazor.Client.Pages.Products
 @inject NotificationService NotificationService
@@ -31,14 +30,14 @@
     {
         if (string.IsNullOrEmpty(searchTerm))
         {
-            filteredProducts = products.OrderByDescending(a=> a.Id).ToList();
+            filteredProducts = products.OrderByDescending(a => a.Id).ToList();
         }
         else
         {
             filteredProducts = products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                                                   p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                                                   .OrderByDescending(a=> a.Id)
-                                                   .ToList();
+                                               p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                                               .OrderByDescending(a => a.Id)
+                                               .ToList();
         }
     }
 
@@ -95,13 +94,13 @@
     {
         if (string.IsNullOrEmpty(searchTerm))
         {
-            filteredProducts = new List<Product>(products).OrderByDescending(a=> a.Id).ToList();
+            filteredProducts = new List<Product>(products).OrderByDescending(a => a.Id).ToList();
         }
         else
         {
             filteredProducts = products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                                                    p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                                                   .OrderByDescending(a=> a.Id)
+                                                   .OrderByDescending(a => a.Id)
                                                    .ToList();
         }
         StateHasChanged();
@@ -117,7 +116,7 @@
             <RadzenButton Text="Search" Icon="search" Click="@(args => Search())" Style="width: 100%;" />
         </RadzenColumn>
         <RadzenColumn Size="12" SizeMD="3">
-            <RadzenButton Text="Create" Icon="add" Click="@(args => CreateProduct())" Style="width: 100%;" />
+            <RadzenButton Text="Create " Icon="add" Click="@(args => CreateProduct())" Style="width: 100%;" />
         </RadzenColumn>
     </RadzenRow>
     <RadzenGrid Data="@filteredProducts" TItem="Product" Style="margin-top: 1rem;">
@@ -125,7 +124,7 @@
             <RadzenGridColumn TItem="Product" Property="Id" Title="ID" />
             <RadzenGridColumn TItem="Product" Property="Name" Title="Name" />
             <RadzenGridColumn TItem="Product" Property="Category" Title="Category" />
-            <RadzenGridColumn TItem="Product" Property="Price" Title="Price" />
+            <RadzenGridColumn TItem="Product" Property="Price" Title="Price" FormatString="C" />
             <RadzenGridColumn TItem="Product" Title="Actions">
                 <Template Context="product">
                     <RadzenButton Text="Edit" Icon="edit" Click="@(args => EditProduct(product))" />
