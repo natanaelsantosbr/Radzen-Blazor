@@ -23,21 +23,19 @@
             new Product { Id = 6, Name = "Mouse", Category = "Accessories", Price = 49.99M },
         };
 
-        filteredProducts = products.OrderByDescending(a => a.Id).ToList();
+        filteredProducts = products;
     }
 
     void Search()
     {
         if (string.IsNullOrEmpty(searchTerm))
         {
-            filteredProducts = products.OrderByDescending(a => a.Id).ToList();
+            filteredProducts = products;
         }
         else
         {
             filteredProducts = products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                                               p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                                               .OrderByDescending(a => a.Id)
-                                               .ToList();
+                                                   p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
 
@@ -90,18 +88,36 @@
         NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Product Created", Detail = $"Product {newProduct.Name} has been created." });
     }
 
+    async void ConfirmDelete(Product product)
+    {
+        string message = "Are you sure you want to delete the product " + product.Name + "?";
+        string title = "Delete Product";
+        var confirmed = await DialogService.Confirm(message, title);
+        if (confirmed == true)
+        {
+            DeleteProduct(product);
+        }
+    }
+
+
+
+    void DeleteProduct(Product product)
+    {
+        products.Remove(product);
+        UpdateFilteredProducts();
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Product Deleted", Detail = $"Product {product.Name} has been deleted." });
+    }
+
     void UpdateFilteredProducts()
     {
         if (string.IsNullOrEmpty(searchTerm))
         {
-            filteredProducts = new List<Product>(products).OrderByDescending(a => a.Id).ToList();
+            filteredProducts = new List<Product>(products);
         }
         else
         {
             filteredProducts = products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                                                   p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                                                   .OrderByDescending(a => a.Id)
-                                                   .ToList();
+                                                   p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
         }
         StateHasChanged();
     }
@@ -115,8 +131,8 @@
         <RadzenColumn Size="12" SizeMD="2">
             <RadzenButton Text="Search" Icon="search" Click="@(args => Search())" Style="width: 100%;" />
         </RadzenColumn>
-        <RadzenColumn Size="12" SizeMD="3">
-            <RadzenButton Text="Create " Icon="add" Click="@(args => CreateProduct())" Style="width: 100%;" />
+        <RadzenColumn Size="12" SizeMD="2">
+            <RadzenButton Text="Create Product" Icon="add" Click="@(args => CreateProduct())" Style="width: 100%;" />
         </RadzenColumn>
     </RadzenRow>
     <RadzenGrid Data="@filteredProducts" TItem="Product" Style="margin-top: 1rem;">
@@ -127,7 +143,8 @@
             <RadzenGridColumn TItem="Product" Property="Price" Title="Price" FormatString="C" />
             <RadzenGridColumn TItem="Product" Title="Actions">
                 <Template Context="product">
-                    <RadzenButton Text="Edit" Icon="edit" Click="@(args => EditProduct(product))" />
+                    <RadzenButton Text="Edit" Icon="edit" Click="@(args => EditProduct(product))" Style="margin-right: 0.5rem;" />
+                    <RadzenButton Text="Delete" Icon="delete" Click="@(args => ConfirmDelete(product))" ButtonStyle="ButtonStyle.Danger" />
                 </Template>
             </RadzenGridColumn>
         </Columns>
