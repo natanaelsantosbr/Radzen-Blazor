@@ -1,8 +1,11 @@
 ﻿@page "/login"
+
 @layout EmptyLayout
+@inject HttpClient HttpClient
 @inject NotificationService NotificationService
 @inject DialogService DialogService
 @inject NavigationManager NavigationManager
+
 
 <RadzenRow Gap="0" Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10" Style="width: 100%; max-width: 800px; overflow: hidden;">
     <RadzenColumn Size="12" SizeMD="6">
@@ -35,15 +38,14 @@
 
 
 @code {
-    string userName = "admin";
-    string password = "admin";
-    bool rememberMe = true;
-
-    async void OnLogin(LoginArgs args, string name)
+    async Task OnLogin(LoginArgs args, string name)
     {
         Console.WriteLine($"{name} -> Username: {args.Username}, password: {args.Password}, remember me: {args.RememberMe}");
 
-        if (args.Username == userName && args.Password == password)
+        var loginRequest = new LoginRequest { Username = args.Username, Password = args.Password };
+        var response = await HttpClient.PostAsJsonAsync("api/auth/login", loginRequest);
+
+        if (response.IsSuccessStatusCode)
         {
             NotificationService.Notify(new NotificationMessage
                     {
@@ -52,29 +54,24 @@
                         Detail = $"Welcome {args.Username}!",
                         Duration = 1000
                     });
-        }
-        else
-        {
-            NotificationService.Notify(new NotificationMessage
-                    {
-                        Severity = NotificationSeverity.Error,
-                        Summary = "Login Failed",
-                        Detail = "Invalid username or password",
-                        Duration = 1000
-                    });
-        }
 
-        if (args.Username == userName && args.Password == password)
-        {
             NavigationManager.NavigateTo("/");
         }
         else
         {
-            await DialogService.OpenAsync("Login Failed", ds => @<div>
-        <h3>Login Failed</h3>
-        <p>Invalid username or password</p>
-        <RadzenButton Text="Close" Click="() => ds.Close()" ButtonStyle="ButtonStyle.Danger" />
-    </div>);
+            NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Login Failed",
+                    Detail = "Invalid username or password",
+                    Duration = 1000
+                });
         }
+    }
+
+    public class LoginRequest
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }
