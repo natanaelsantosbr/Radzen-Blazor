@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Components
-@using static MyRadzenBlazor.Client.Pages.Forms.ProductSearch
 @inject DialogService DialogService
 
 @functions {
@@ -20,15 +19,13 @@
 
 <div class="dialog-content">
     <RadzenTemplateForm Data="@Product" Submit="@((Product args) => Save())">
-        <RadzenRow Gap="1rem" Class="rz-p-0 rz-p-lg-4">
-            <RadzenTextBox @bind-Value="Product.Name" Name="Name" Label="Name" Style="width: 100%;" />
-            <RadzenTextBox @bind-Value="Product.Category" Name="Category" Label="Category" Style="width: 100%;" />
-            <RadzenNumeric @bind-Value="Product.Price" Name="Price" Label="Price" Style="width: 100%;" />
-            <div class="dialog-buttons">
-                <RadzenButton Text="Save" Icon="save" Type="submit" Style="margin-right: 1rem;" />
-                <RadzenButton Text="Cancel" Icon="close" Click="@Cancel" />
-            </div>
-        </RadzenRow>        
+        <RadzenTextBox @bind-Value="Product.Name" Name="Name" Label="Name" Style="width: 100%;" />
+        <RadzenTextBox @bind-Value="Product.Category" Name="Category" Label="Category" Style="width: 100%;" />
+        <RadzenNumeric @bind-Value="Product.Price" Name="Price" Label="Price" Style="width: 100%;" />
+        <div class="dialog-buttons">
+            <RadzenButton Text="Save" Icon="save" Type="submit" Style="margin-right: 1rem;" />
+            <RadzenButton Text="Cancel" Icon="close" Click="@Cancel" />
+        </div>
     </RadzenTemplateForm>
 </div>
 

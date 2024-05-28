@@ -1,17 +1,11 @@
 ﻿@page "/product-search"
+<PageTitle>Product Search </PageTitle>
 @using System.Linq
+@using MyRadzenBlazor.Client.Pages.Products
 @inject NotificationService NotificationService
 @inject DialogService DialogService
 
 @functions {
-    public class Product
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public decimal Price { get; set; }
-    }
-
     List<Product> products;
     List<Product> filteredProducts;
     string searchTerm;
@@ -30,19 +24,21 @@
             new Product { Id = 6, Name = "Mouse", Category = "Accessories", Price = 49.99M },
         };
 
-        filteredProducts = products;
+        filteredProducts = products.OrderByDescending(a => a.Id).ToList();
     }
 
     void Search()
     {
         if (string.IsNullOrEmpty(searchTerm))
         {
-            filteredProducts = products;
+            filteredProducts = products.OrderByDescending(a=> a.Id).ToList();
         }
         else
         {
             filteredProducts = products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                                                   p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+                                                   p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                                                   .OrderByDescending(a=> a.Id)
+                                                   .ToList();
         }
     }
 
@@ -63,6 +59,17 @@
         }, new DialogOptions() { Width = "500px", Height = "400px" });
     }
 
+    void CreateProduct()
+    {
+        selectedProduct = new Product();
+
+        DialogService.Open<EditProductDialog>("Create Product", new Dictionary<string, object>
+        {
+            { "Product", selectedProduct },
+            { "OnSave", EventCallback.Factory.Create<Product>(this, AddProduct) }
+        }, new DialogOptions() { Width = "500px", Height = "400px" });
+    }
+
     void SaveProduct(Product updatedProduct)
     {
         var product = products.FirstOrDefault(p => p.Id == updatedProduct.Id);
@@ -73,6 +80,31 @@
             product.Price = updatedProduct.Price;
         }
         NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Product Saved", Detail = $"Product {updatedProduct.Name} has been updated." });
+        UpdateFilteredProducts();
+    }
+
+    void AddProduct(Product newProduct)
+    {
+        newProduct.Id = products.Any() ? products.Max(p => p.Id) + 1 : 1;
+        products.Add(newProduct);
+        UpdateFilteredProducts();
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Product Created", Detail = $"Product {newProduct.Name} has been created." });
+    }
+
+    void UpdateFilteredProducts()
+    {
+        if (string.IsNullOrEmpty(searchTerm))
+        {
+            filteredProducts = new List<Product>(products).OrderByDescending(a=> a.Id).ToList();
+        }
+        else
+        {
+            filteredProducts = products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                                   p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                                                   .OrderByDescending(a=> a.Id)
+                                                   .ToList();
+        }
+        StateHasChanged();
     }
 }
 
@@ -84,13 +116,16 @@
         <RadzenColumn Size="12" SizeMD="2">
             <RadzenButton Text="Search" Icon="search" Click="@(args => Search())" Style="width: 100%;" />
         </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="3">
+            <RadzenButton Text="Create" Icon="add" Click="@(args => CreateProduct())" Style="width: 100%;" />
+        </RadzenColumn>
     </RadzenRow>
     <RadzenGrid Data="@filteredProducts" TItem="Product" Style="margin-top: 1rem;">
         <Columns>
             <RadzenGridColumn TItem="Product" Property="Id" Title="ID" />
             <RadzenGridColumn TItem="Product" Property="Name" Title="Name" />
             <RadzenGridColumn TItem="Product" Property="Category" Title="Category" />
-            <RadzenGridColumn TItem="Product" Property="Price" Title="Price" FormatString="C" />
+            <RadzenGridColumn TItem="Product" Property="Price" Title="Price" />
             <RadzenGridColumn TItem="Product" Title="Actions">
                 <Template Context="product">
                     <RadzenButton Text="Edit" Icon="edit" Click="@(args => EditProduct(product))" />
