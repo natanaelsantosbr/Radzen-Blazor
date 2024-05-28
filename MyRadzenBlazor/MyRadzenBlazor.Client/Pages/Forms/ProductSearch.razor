@@ -60,7 +60,7 @@
         {
             { "Product", selectedProduct },
             { "OnSave", EventCallback.Factory.Create<Product>(this, SaveProduct) }
-        });
+        }, new DialogOptions() { Width = "500px", Height = "400px" });
     }
 
     void SaveProduct(Product updatedProduct)
