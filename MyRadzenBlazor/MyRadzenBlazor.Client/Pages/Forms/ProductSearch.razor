@@ -1,6 +1,7 @@
 ﻿@page "/product-search"
 @using System.Linq
 @inject NotificationService NotificationService
+@inject DialogService DialogService
 
 @functions {
     public class Product
@@ -14,6 +15,7 @@
     List<Product> products;
     List<Product> filteredProducts;
     string searchTerm;
+    Product selectedProduct;
 
     protected override void OnInitialized()
     {
@@ -43,6 +45,35 @@
                                                    p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
+
+    void EditProduct(Product product)
+    {
+        selectedProduct = new Product
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Category = product.Category,
+                Price = product.Price
+            };
+
+        DialogService.Open<EditProductDialog>("Edit Product", new Dictionary<string, object>
+        {
+            { "Product", selectedProduct },
+            { "OnSave", EventCallback.Factory.Create<Product>(this, SaveProduct) }
+        });
+    }
+
+    void SaveProduct(Product updatedProduct)
+    {
+        var product = products.FirstOrDefault(p => p.Id == updatedProduct.Id);
+        if (product != null)
+        {
+            product.Name = updatedProduct.Name;
+            product.Category = updatedProduct.Category;
+            product.Price = updatedProduct.Price;
+        }
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Product Saved", Detail = $"Product {updatedProduct.Name} has been updated." });
+    }
 }
 
 <RadzenCard>
@@ -60,6 +91,11 @@
             <RadzenGridColumn TItem="Product" Property="Name" Title="Name" />
             <RadzenGridColumn TItem="Product" Property="Category" Title="Category" />
             <RadzenGridColumn TItem="Product" Property="Price" Title="Price" FormatString="C" />
+            <RadzenGridColumn TItem="Product" Title="Actions">
+                <Template Context="product">
+                    <RadzenButton Text="Edit" Icon="edit" Click="@(args => EditProduct(product))" />
+                </Template>
+            </RadzenGridColumn>
         </Columns>
     </RadzenGrid>
 </RadzenCard>

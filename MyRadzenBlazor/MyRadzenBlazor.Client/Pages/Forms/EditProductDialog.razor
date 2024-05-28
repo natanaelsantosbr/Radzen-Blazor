@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Components
+@using static MyRadzenBlazor.Client.Pages.Forms.ProductSearch
+@inject DialogService DialogService
+
+@functions {
+    [Parameter] public Product Product { get; set; }
+    [Parameter] public EventCallback<Product> OnSave { get; set; }
+
+    void Save()
+    {
+        OnSave.InvokeAsync(Product);
+        DialogService.Close();
+    }
+
+    void Cancel()
+    {
+        DialogService.Close();
+    }
+}
+
+<RadzenTemplateForm Data="@Product" Submit="@((Product args) => Save())">
+    <RadzenTextBox @bind-Value="Product.Name" Name="Name" Label="Name" Style="width: 100%;" />
+    <RadzenTextBox @bind-Value="Product.Category" Name="Category" Label="Category" Style="width: 100%;" />
+    <RadzenNumeric @bind-Value="Product.Price" Name="Price" Label="Price" Style="width: 100%;" />
+    <RadzenButton Text="Save" Icon="save" Type="submit" Style="margin-right: 1rem;" />
+    <RadzenButton Text="Cancel" Icon="close" Click="@Cancel" />
+</RadzenTemplateForm>

@@ -1,0 +1,77 @@
+﻿@page "/product-form"
+@using System.ComponentModel.DataAnnotations
+@inject NotificationService NotificationService
+@inject DialogService DialogService
+
+@code {
+    Product product = new Product();
+    List<string> categories = new List<string> { "Electronics", "Accessories", "Clothing", "Books" };
+
+    void Submit(Product product)
+    {
+        NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Product Saved",
+                Detail = "Your product has been saved successfully.",
+                Duration = 4000
+            });
+    }
+
+    void Cancel()
+    {
+        NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Warning,
+                Summary = "Cancelled",
+                Detail = "Operation cancelled.",
+                Duration = 4000
+            });
+    }
+}
+
+<RadzenCard Style="margin: 2rem;">
+    <RadzenTemplateForm Data="@product" Submit="@((Product args) => { Submit(args); })" Style="max-width: 600px; margin: auto;">
+        <RadzenFieldset Text="Product Details" Style="margin-bottom: 1rem;">
+            <RadzenStack Gap="1rem">
+                <RadzenLabel Text="Product Name" />
+                <RadzenTextBox @bind-Value="product.Name" Placeholder="Enter product name" Style="width: 100%;" />
+                <RadzenRequiredValidator Component="product.Name" Text="Product Name is required" />
+
+                <RadzenLabel Text="Category" />
+                <RadzenDropDown Data="@categories" @bind-Value="product.Category" Placeholder="Select category" Style="width: 100%;" />
+                <RadzenRequiredValidator Component="product.Category" Text="Category is required" />
+
+                <RadzenLabel Text="Price" />
+                <RadzenNumeric @bind-Value="product.Price" Placeholder="Enter price" Style="width: 100%;" Min="0" />
+                <RadzenRequiredValidator Component="product.Price" Text="Price is required" />
+
+                <RadzenLabel Text="Stock Quantity" />
+                <RadzenNumeric @bind-Value="product.StockQuantity" Placeholder="Enter stock quantity" Style="width: 100%;" Min="0" />
+                <RadzenRequiredValidator Component="product.StockQuantity" Text="Stock Quantity is required" />
+
+                <RadzenLabel Text="Description" />
+                <RadzenTextArea @bind-Value="product.Description" Placeholder="Enter product description" Style="width: 100%;" Rows="5" />
+            </RadzenStack>
+        </RadzenFieldset>
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Save" Icon="save" Style="margin-right: 1rem;" />
+        <RadzenButton Text="Cancel" Icon="cancel" Click="@Cancel" />
+    </RadzenTemplateForm>
+</RadzenCard>
+
+@code {
+    public class Product
+    {
+        [Required]
+        public string Name { get; set; }
+        [Required]
+        public string Category { get; set; }
+        [Required]
+        [Range(0, double.MaxValue, ErrorMessage = "Price must be greater than or equal to 0")]
+        public decimal Price { get; set; }
+        [Required]
+        [Range(0, int.MaxValue, ErrorMessage = "Stock Quantity must be greater than or equal to 0")]
+        public int StockQuantity { get; set; }
+        public string Description { get; set; }
+    }
+}
