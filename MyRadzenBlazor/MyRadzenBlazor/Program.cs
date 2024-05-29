@@ -38,6 +38,7 @@ builder.Services.AddSingleton(sp =>
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<AuthAppService>();
+builder.Services.AddScoped<ProductAppService>();
 
 var app = builder.Build();
 

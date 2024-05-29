@@ -2,6 +2,7 @@
 using MyRadzenBlazor.Client.Models;
 using MyRadzenBlazor.Client.Pages.Products;
 using Radzen;
+using System.Net.Http.Json;
 
 namespace MyRadzenBlazor.Client.Services
 {
@@ -9,32 +10,31 @@ namespace MyRadzenBlazor.Client.Services
     {
         private readonly NotificationService _notificationService;
         private readonly DialogService _dialogService;
-        private readonly Action _stateHasChanged;
+        private readonly HttpClient _httpClient;
 
         public List<ProductRequest> Products { get; private set; }
         public List<ProductRequest> FilteredProducts { get; private set; }
 
-        public ProductService(NotificationService notificationService, DialogService dialogService, Action stateHasChanged)
+        public event Action ProductsChanged;
+
+        public ProductService(NotificationService notificationService, DialogService dialogService, HttpClient httpClient)
         {
             _notificationService = notificationService;
             _dialogService = dialogService;
-
-            // Mock data
-            Products = new List<ProductRequest>
-        {
-            new ProductRequest { Id = 1, Name = "Laptop", Category = "Electronics", Price = 999.99M },
-            new ProductRequest { Id = 2, Name = "Smartphone", Category = "Electronics", Price = 699.99M },
-            new ProductRequest { Id = 3, Name = "Tablet", Category = "Electronics", Price = 399.99M },
-            new ProductRequest { Id = 4, Name = "Headphones", Category = "Accessories", Price = 199.99M },
-            new ProductRequest { Id = 5, Name = "Monitor", Category = "Electronics", Price = 299.99M },
-            new ProductRequest { Id = 6, Name = "Mouse", Category = "Accessories", Price = 49.99M },
-        };
-
-            FilteredProducts = Products;
-            _stateHasChanged = stateHasChanged;
+            _httpClient = httpClient;
         }
 
-        public void Search(string searchTerm)
+        public async Task<List<ProductRequest>> LoadProductsAsync()
+        {
+            var response = await this._httpClient.GetFromJsonAsync<List<ProductRequest>>("api/products");
+            Products = response;
+            FilteredProducts = response;
+            NotifyProductsChanged();
+
+            return response;
+        }
+
+        public List<ProductRequest> Search(string searchTerm)
         {
             if (string.IsNullOrEmpty(searchTerm))
             {
@@ -45,7 +45,9 @@ namespace MyRadzenBlazor.Client.Services
                 FilteredProducts = Products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                                                        p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            _stateHasChanged();
+            NotifyProductsChanged();
+
+            return FilteredProducts;
         }
 
         public void EditProduct(ProductRequest product)
@@ -59,10 +61,10 @@ namespace MyRadzenBlazor.Client.Services
             };
 
             _dialogService.Open<EditProductDialog>("Edit Product", new Dictionary<string, object>
-        {
-            { "Product", selectedProduct },
-            { "OnSave", EventCallback.Factory.Create<ProductRequest>(this, SaveProduct) }
-        }, new DialogOptions() { Width = "500px", Height = "400px" });
+            {
+                { "Product", selectedProduct },
+                { "OnSave", EventCallback.Factory.Create<ProductRequest>(this, SaveProduct) }
+            }, new DialogOptions() { Width = "500px", Height = "400px" });
         }
 
         public void CreateProduct()
@@ -70,10 +72,10 @@ namespace MyRadzenBlazor.Client.Services
             var selectedProduct = new ProductRequest();
 
             _dialogService.Open<EditProductDialog>("Create Product", new Dictionary<string, object>
-        {
-            { "Product", selectedProduct },
-            { "OnSave", EventCallback.Factory.Create<ProductRequest>(this, AddProduct) }
-        }, new DialogOptions() { Width = "500px", Height = "400px" });
+            {
+                { "Product", selectedProduct },
+                { "OnSave", EventCallback.Factory.Create<ProductRequest>(this, AddProduct) }
+            }, new DialogOptions() { Width = "500px", Height = "400px" });
         }
 
         public void SaveProduct(ProductRequest updatedProduct)
@@ -117,8 +119,10 @@ namespace MyRadzenBlazor.Client.Services
 
         private void UpdateFilteredProducts()
         {
-            FilteredProducts = new List<ProductRequest>(Products);
-            _stateHasChanged();
+            FilteredProducts = new List<ProductRequest>(Products.OrderByDescending(a=> a.Id).ToList());
+            NotifyProductsChanged();
         }
+
+        private void NotifyProductsChanged() => ProductsChanged?.Invoke();
     }
 }
