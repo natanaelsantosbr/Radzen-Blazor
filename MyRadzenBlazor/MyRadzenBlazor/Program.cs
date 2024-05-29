@@ -4,6 +4,7 @@ using MyRadzenBlazor.Client.Pages;
 using MyRadzenBlazor.Components;
 using MyRadzenBlazor.Services;
 using Radzen;
+using MyRadzenBlazor.Client.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,9 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<AuthAppService>();
 builder.Services.AddScoped<ProductAppService>();
+
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
