@@ -1,125 +1,16 @@
 ﻿@page "/product-search"
-@using System.Linq
 @using MyRadzenBlazor.Client.Pages.Products
 @inject NotificationService NotificationService
 @inject DialogService DialogService
 
-@functions {
-    List<ProductRequest> products;
-    List<ProductRequest> filteredProducts;
-    string searchTerm;
-    ProductRequest selectedProduct;
+@code {
+    private string searchTerm;
+
+    private ProductService productService;
 
     protected override void OnInitialized()
     {
-        // Mock data
-        products = new List<ProductRequest>
-        {
-            new ProductRequest { Id = 1, Name = "Laptop", Category = "Electronics", Price = 999.99M },
-            new ProductRequest { Id = 2, Name = "Smartphone", Category = "Electronics", Price = 699.99M },
-            new ProductRequest { Id = 3, Name = "Tablet", Category = "Electronics", Price = 399.99M },
-            new ProductRequest { Id = 4, Name = "Headphones", Category = "Accessories", Price = 199.99M },
-            new ProductRequest { Id = 5, Name = "Monitor", Category = "Electronics", Price = 299.99M },
-            new ProductRequest { Id = 6, Name = "Mouse", Category = "Accessories", Price = 49.99M },
-        };
-
-        filteredProducts = products;
-    }
-
-    void Search()
-    {
-        if (string.IsNullOrEmpty(searchTerm))
-        {
-            filteredProducts = products;
-        }
-        else
-        {
-            filteredProducts = products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                                                   p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-    }
-
-    void EditProduct(ProductRequest product)
-    {
-        selectedProduct = new ProductRequest
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Category = product.Category,
-                Price = product.Price
-            };
-
-        DialogService.Open<EditProductDialog>("Edit Product", new Dictionary<string, object>
-        {
-            { "Product", selectedProduct },
-            { "OnSave", EventCallback.Factory.Create<ProductRequest>(this, SaveProduct) }
-        }, new DialogOptions() { Width = "500px", Height = "400px" });
-    }
-
-    void CreateProduct()
-    {
-        selectedProduct = new ProductRequest();
-
-        DialogService.Open<EditProductDialog>("Create Product", new Dictionary<string, object>
-        {
-            { "Product", selectedProduct },
-            { "OnSave", EventCallback.Factory.Create<ProductRequest>(this, AddProduct) }
-        }, new DialogOptions() { Width = "500px", Height = "400px" });
-    }
-
-    void SaveProduct(ProductRequest updatedProduct)
-    {
-        var product = products.FirstOrDefault(p => p.Id == updatedProduct.Id);
-        if (product != null)
-        {
-            product.Name = updatedProduct.Name;
-            product.Category = updatedProduct.Category;
-            product.Price = updatedProduct.Price;
-        }
-        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Product Saved", Detail = $"Product {updatedProduct.Name} has been updated." });
-        UpdateFilteredProducts();
-    }
-
-    void AddProduct(ProductRequest newProduct)
-    {
-        newProduct.Id = products.Any() ? products.Max(p => p.Id) + 1 : 1;
-        products.Add(newProduct);
-        UpdateFilteredProducts();
-        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Product Created", Detail = $"Product {newProduct.Name} has been created." });
-    }
-
-    async void ConfirmDelete(ProductRequest product)
-    {
-        string message = "Are you sure you want to delete the product " + product.Name + "?";
-        string title = "Delete Product";
-        var confirmed = await DialogService.Confirm(message, title);
-        if (confirmed == true)
-        {
-            DeleteProduct(product);
-        }
-    }
-
-
-
-    void DeleteProduct(ProductRequest product)
-    {
-        products.Remove(product);
-        UpdateFilteredProducts();
-        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Product Deleted", Detail = $"Product {product.Name} has been deleted." });
-    }
-
-    void UpdateFilteredProducts()
-    {
-        if (string.IsNullOrEmpty(searchTerm))
-        {
-            filteredProducts = new List<ProductRequest>(products);
-        }
-        else
-        {
-            filteredProducts = products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                                                   p.Category.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-        StateHasChanged();
+        productService = new ProductService(NotificationService, DialogService, StateHasChanged);
     }
 }
 
@@ -129,13 +20,13 @@
             <RadzenTextBox Placeholder="Search..." @bind-Value="searchTerm" Style="width: 100%;" />
         </RadzenColumn>
         <RadzenColumn Size="12" SizeMD="2">
-            <RadzenButton Text="Search" Icon="search" Click="@(args => Search())" Style="width: 100%;" />
+            <RadzenButton Text="Search" Icon="search" Click="@(args => productService.Search(searchTerm))" Style="width: 100%;" />
         </RadzenColumn>
         <RadzenColumn Size="12" SizeMD="2">
-            <RadzenButton Text="Create Product" Icon="add" Click="@(args => CreateProduct())" Style="width: 100%;" />
+            <RadzenButton Text="Create" Icon="add" Click="@(args => productService.CreateProduct())" Style="width: 100%;" />
         </RadzenColumn>
     </RadzenRow>
-    <RadzenGrid Data="@filteredProducts" TItem="ProductRequest" Style="margin-top: 1rem;">
+    <RadzenGrid Data="@productService.FilteredProducts" TItem="ProductRequest" Style="margin-top: 1rem;">
         <Columns>
             <RadzenGridColumn TItem="ProductRequest" Property="Id" Title="ID" />
             <RadzenGridColumn TItem="ProductRequest" Property="Name" Title="Name" />
@@ -143,8 +34,8 @@
             <RadzenGridColumn TItem="ProductRequest" Property="Price" Title="Price" FormatString="C" />
             <RadzenGridColumn TItem="ProductRequest" Title="Actions">
                 <Template Context="product">
-                    <RadzenButton Text="Edit" Icon="edit" Click="@(args => EditProduct(product))" Style="margin-right: 0.5rem;" />
-                    <RadzenButton Text="Delete" Icon="delete" Click="@(args => ConfirmDelete(product))" ButtonStyle="ButtonStyle.Danger" />
+                    <RadzenButton Text="Edit" Icon="edit" Click="@(args => productService.EditProduct(product))" Style="margin-right: 0.5rem;" />
+                    <RadzenButton Text="Delete" Icon="delete" Click="@(args => productService.ConfirmDelete(product))" ButtonStyle="ButtonStyle.Danger" />
                 </Template>
             </RadzenGridColumn>
         </Columns>
