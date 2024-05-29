@@ -3,6 +3,7 @@
 @inject NotificationService NotificationService
 @inject DialogService DialogService
 
+<PageTitle>Products</PageTitle>
 @code {
     private string searchTerm;
 
@@ -31,7 +32,7 @@
             <RadzenGridColumn TItem="ProductRequest" Property="Id" Title="ID" />
             <RadzenGridColumn TItem="ProductRequest" Property="Name" Title="Name" />
             <RadzenGridColumn TItem="ProductRequest" Property="Category" Title="Category" />
-            <RadzenGridColumn TItem="ProductRequest" Property="Price" Title="Price" FormatString="C" />
+            <RadzenGridColumn TItem="ProductRequest" Property="Price" Title="Price" />
             <RadzenGridColumn TItem="ProductRequest" Title="Actions">
                 <Template Context="product">
                     <RadzenButton Text="Edit" Icon="edit" Click="@(args => productService.EditProduct(product))" Style="margin-right: 0.5rem;" />
