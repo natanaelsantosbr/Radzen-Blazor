@@ -1,10 +1,6 @@
 ﻿@page "/login"
-
 @layout EmptyLayout
-@inject HttpClient HttpClient
-@inject NotificationService NotificationService
-@inject DialogService DialogService
-@inject NavigationManager NavigationManager
+@inject AuthService AuthService
 
 
 <RadzenRow Gap="0" Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10" Style="width: 100%; max-width: 800px; overflow: hidden;">
@@ -40,38 +36,6 @@
 @code {
     async Task OnLogin(LoginArgs args, string name)
     {
-        Console.WriteLine($"{name} -> Username: {args.Username}, password: {args.Password}, remember me: {args.RememberMe}");
-
-        var loginRequest = new LoginRequest { Username = args.Username, Password = args.Password };
-        var response = await HttpClient.PostAsJsonAsync("api/auth/login", loginRequest);
-
-        if (response.IsSuccessStatusCode)
-        {
-            NotificationService.Notify(new NotificationMessage
-                    {
-                        Severity = NotificationSeverity.Success,
-                        Summary = "Login Successful",
-                        Detail = $"Welcome {args.Username}!",
-                        Duration = 1000
-                    });
-
-            NavigationManager.NavigateTo("/");
-        }
-        else
-        {
-            NotificationService.Notify(new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "Login Failed",
-                    Detail = "Invalid username or password",
-                    Duration = 1000
-                });
-        }
-    }
-
-    public class LoginRequest
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        await AuthService.LoginAsync(args);
     }
 }

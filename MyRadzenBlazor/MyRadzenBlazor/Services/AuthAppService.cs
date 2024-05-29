@@ -1,6 +1,6 @@
 ﻿namespace MyRadzenBlazor.Services
 {
-    public class AuthService
+    public class AuthAppService
     {
         private readonly string _validUsername = "admin";
         private readonly string _validPassword = "admin";

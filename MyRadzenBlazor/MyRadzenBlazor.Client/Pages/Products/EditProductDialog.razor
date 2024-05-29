@@ -4,8 +4,8 @@
 @inject DialogService DialogService
 
 @functions {
-    [Parameter] public Product Product { get; set; }
-    [Parameter] public EventCallback<Product> OnSave { get; set; }
+    [Parameter] public ProductRequest Product { get; set; }
+    [Parameter] public EventCallback<ProductRequest> OnSave { get; set; }
 
     void Save()
     {
@@ -20,7 +20,7 @@
 }
 
 <div class="dialog-content">
-    <RadzenTemplateForm Data="@Product" Submit="@((Product args) => Save())">
+    <RadzenTemplateForm Data="@Product" Submit="@((ProductRequest args) => Save())">
         <RadzenTextBox @bind-Value="Product.Name" Name="Name" Label="Name" Style="width: 100%;" />
         <RadzenRequiredValidator Component="Name" Text="Name is required" />
 

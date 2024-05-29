@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly AuthService _authService;
+    private readonly AuthAppService _authService;
 
-    public AuthController(AuthService authService)
+    public AuthController(AuthAppService authService)
     {
         _authService = authService;
     }
