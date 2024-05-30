@@ -20,13 +20,9 @@ namespace MyRadzenBlazor.Controllers
         }
 
         [HttpGet]
-        public ActionResult<PagedResponse<Cliente>> GetClients(int pageIndex = 0, int pageSize = 10)
+        public ActionResult<PagedResponse<Cliente>> GetClients(int pageIndex = 0, int pageSize = 10, string name = null, string email = null)
         {
-            var clients = _clientAppService.GetClients(pageIndex, pageSize);
-            var totalClients = _clientAppService.GetClients(0, int.MaxValue).Count;
-
-            var response = new PagedResponse<Cliente>(clients, pageIndex, pageSize, totalClients);
-
+            var response = _clientAppService.GetClientsV2(pageIndex, pageSize, name, email);
             return Ok(response);
         }
 

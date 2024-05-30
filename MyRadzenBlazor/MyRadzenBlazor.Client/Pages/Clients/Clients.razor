@@ -2,6 +2,23 @@
 @inject ClientService _clientService
 @inject DialogService DialogService
 @inject NotificationService NotificationService
+<PageTitle>Clientes</PageTitle>
+<RadzenTemplateForm Data="@searchModel" Submit="@((SearchModel args) => SearchClients())">
+    <div class="row">
+        <div class="col-md-4">
+            <RadzenLabel Text="Name" />
+            <RadzenTextBox @bind-Value="searchModel.Name" Style="width: 100%;" />
+        </div>
+        <div class="col-md-4">
+            <RadzenLabel Text="Email" />
+            <RadzenTextBox @bind-Value="searchModel.Email" Style="width: 100%;" />
+        </div>
+        <div class="col-md-4" style="margin-top: 2rem;">
+            <RadzenButton Text="Search" Icon="search" ButtonType="ButtonType.Submit" />
+            <RadzenButton Text="Clear" Icon="clear" Click="@(args => ClearSearch())" />
+        </div>
+    </div>
+</RadzenTemplateForm>
 
 <RadzenGrid PageSize="5" AllowPaging="true" AllowSorting="true" Data="@clients" TItem="ClientRequest" Count="@totalClients" LoadData="@LoadData" Style="margin-top: 1rem;">
     <Columns>
@@ -11,8 +28,8 @@
         <RadzenGridColumn TItem="ClientRequest" Property="Phone" Title="Phone" />
         <RadzenGridColumn TItem="ClientRequest" Title="Actions">
             <Template Context="client">
-                <RadzenButton Icon="edit" Click="@(args => EditClient(client))" Style="margin-right: 0.5rem;" />
-                <RadzenButton Icon="delete" Click="@(args => ConfirmDelete(client))" ButtonStyle="ButtonStyle.Danger" />
+                <RadzenButton Text="Edit" Icon="edit" Click="@(args => EditClient(client))" Style="margin-right: 0.5rem;" />
+                <RadzenButton Text="Delete" Icon="delete" Click="@(args => ConfirmDelete(client))" ButtonStyle="ButtonStyle.Danger" />
             </Template>
         </RadzenGridColumn>
     </Columns>
@@ -23,19 +40,31 @@
 @code {
     private List<ClientRequest> clients;
     private int totalClients;
+    private SearchModel searchModel = new SearchModel();
 
     protected override async Task OnInitializedAsync()
     {
-        //await LoadData(new Radzen.LoadDataArgs { Skip = 0, Top = 5 });
+        await LoadData(new Radzen.LoadDataArgs { Skip = 0, Top = 5 });
     }
 
     private async Task LoadData(Radzen.LoadDataArgs args)
     {
         var pageIndex = args.Skip / args.Top ?? 0;
         var pageSize = args.Top ?? 5;
-        var result = await _clientService.GetClients(pageIndex, pageSize);
+        var result = await _clientService.GetClients(pageIndex, pageSize, searchModel.Name, searchModel.Email);
         clients = result.Item1;
         totalClients = result.Item2;
+    }
+
+    private async Task SearchClients()
+    {
+        await LoadData(new Radzen.LoadDataArgs { Skip = 0, Top = 5 });
+    }
+
+    private void ClearSearch()
+    {
+        searchModel = new SearchModel();
+        StateHasChanged();
     }
 
     private async Task AddClient()

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MyRadzenBlazor.Shared.Models;
 
 namespace MyRadzenBlazor.Services
 {
@@ -34,7 +35,38 @@ namespace MyRadzenBlazor.Services
             return clients;
         }
 
-        public List<Cliente> GetClients(int pageIndex, int pageSize)
+        public PagedResponse<Cliente> GetClientsV2(int pageIndex, int pageSize, string name = null, string email = null)
+        {
+            if (!_cache.TryGetValue(CacheKey, out List<Cliente> clients))
+            {
+                clients = LoadMockData();
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                _cache.Set(CacheKey, clients, cacheEntryOptions);
+            }
+
+            var filteredClients = clients.AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                filteredClients = filteredClients.Where(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                filteredClients = filteredClients.Where(c => c.Email.Contains(email, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var pagedClients = filteredClients.OrderByDescending(c => c.Id)
+                                              .Skip(pageIndex * pageSize)
+                                              .Take(pageSize)
+                                              .ToList();
+            var totalClients = filteredClients.Count();
+
+            return new PagedResponse<Cliente>(pagedClients, pageIndex, pageSize, totalClients);
+        }
+
+        private List<Cliente> GetClients(int pageIndex, int pageSize)
         {
             if (!_cache.TryGetValue(CacheKey, out List<Cliente> clients))
             {

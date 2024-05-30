@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Web;
 using MyRadzenBlazor.Client.Requests;
 using MyRadzenBlazor.Shared.Models;
 
@@ -11,9 +12,15 @@ public class ClientService
         _httpClient = httpClient;
     }
 
-    public async Task<(List<ClientRequest>, int)> GetClients(int pageIndex, int pageSize)
+    public async Task<(List<ClientRequest>, int)> GetClients(int pageIndex, int pageSize, string name = null, string email = null)
     {
-        var response = await _httpClient.GetAsync($"api/clients?pageIndex={pageIndex}&pageSize={pageSize}");
+        var query = HttpUtility.ParseQueryString(string.Empty);
+        query["pageIndex"] = pageIndex.ToString();
+        query["pageSize"] = pageSize.ToString();
+        if (!string.IsNullOrEmpty(name)) query["name"] = name;
+        if (!string.IsNullOrEmpty(email)) query["email"] = email;
+
+        var response = await _httpClient.GetAsync($"api/clients?{query.ToString()}");
         if (response.IsSuccessStatusCode)
         {
             var pagedResponse = await response.Content.ReadFromJsonAsync<PagedResponse<ClientRequest>>();
