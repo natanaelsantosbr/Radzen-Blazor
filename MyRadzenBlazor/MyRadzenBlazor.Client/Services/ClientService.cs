@@ -1,9 +1,6 @@
-﻿using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Json;
 using MyRadzenBlazor.Client.Requests;
+using MyRadzenBlazor.Shared.Models;
 
 public class ClientService
 {
@@ -19,9 +16,8 @@ public class ClientService
         var response = await _httpClient.GetAsync($"api/clients?pageIndex={pageIndex}&pageSize={pageSize}");
         if (response.IsSuccessStatusCode)
         {
-            var clients = await response.Content.ReadFromJsonAsync<List<ClientRequest>>();
-            var totalCount = int.Parse(response.Headers.GetValues("X-Total-Count").FirstOrDefault());
-            return (clients, totalCount);
+            var pagedResponse = await response.Content.ReadFromJsonAsync<PagedResponse<ClientRequest>>();
+            return (pagedResponse.Data, pagedResponse.TotalCount);
         }
 
         return (new List<ClientRequest>(), 0);

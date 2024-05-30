@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyRadzenBlazor.DTOs;
 using MyRadzenBlazor.Entities;
 using MyRadzenBlazor.Services;
+using MyRadzenBlazor.Shared.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,14 +20,14 @@ namespace MyRadzenBlazor.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Cliente>> GetClients(int pageIndex = 0, int pageSize = 10)
+        public ActionResult<PagedResponse<Cliente>> GetClients(int pageIndex = 0, int pageSize = 10)
         {
             var clients = _clientAppService.GetClients(pageIndex, pageSize);
             var totalClients = _clientAppService.GetClients(0, int.MaxValue).Count;
 
-            Response.Headers.Add("X-Total-Count", totalClients.ToString());
+            var response = new PagedResponse<Cliente>(clients, pageIndex, pageSize, totalClients);
 
-            return Ok(clients);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
