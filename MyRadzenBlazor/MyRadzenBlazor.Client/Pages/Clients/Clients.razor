@@ -3,7 +3,7 @@
 @inject DialogService DialogService
 @inject NotificationService NotificationService
 
-<RadzenGrid PageSize="5" AllowPaging="true" AllowSorting="true" Data="@clients" TItem="ClientRequest" Style="margin-top: 1rem;">
+<RadzenGrid PageSize="5" AllowPaging="true" AllowSorting="true" Data="@clients" TItem="ClientRequest" Count="@totalClients" LoadData="@LoadData" Style="margin-top: 1rem;">
     <Columns>
         <RadzenGridColumn TItem="ClientRequest" Property="Id" Title="ID" />
         <RadzenGridColumn TItem="ClientRequest" Property="Name" Title="Name" />
@@ -11,8 +11,8 @@
         <RadzenGridColumn TItem="ClientRequest" Property="Phone" Title="Phone" />
         <RadzenGridColumn TItem="ClientRequest" Title="Actions">
             <Template Context="client">
-                <RadzenButton Text="Edit" Icon="edit" Click="@(args => EditClient(client))" Style="margin-right: 0.5rem;" />
-                <RadzenButton Text="Delete" Icon="delete" Click="@(args => ConfirmDelete(client))" ButtonStyle="ButtonStyle.Danger" />
+                <RadzenButton Icon="edit" Click="@(args => EditClient(client))" Style="margin-right: 0.5rem;" />
+                <RadzenButton Icon="delete" Click="@(args => ConfirmDelete(client))" ButtonStyle="ButtonStyle.Danger" />
             </Template>
         </RadzenGridColumn>
     </Columns>
@@ -22,16 +22,20 @@
 
 @code {
     private List<ClientRequest> clients;
+    private int totalClients;
 
     protected override async Task OnInitializedAsync()
     {
-        await ReloadClients();
+        //await LoadData(new Radzen.LoadDataArgs { Skip = 0, Top = 5 });
     }
 
-    private async Task ReloadClients()
+    private async Task LoadData(Radzen.LoadDataArgs args)
     {
-        clients = await _clientService.GetClients();
-        StateHasChanged();
+        var pageIndex = args.Skip / args.Top ?? 0;
+        var pageSize = args.Top ?? 5;
+        var result = await _clientService.GetClients(pageIndex, pageSize);
+        clients = result.Item1;
+        totalClients = result.Item2;
     }
 
     private async Task AddClient()
@@ -39,7 +43,7 @@
         var result = await DialogService.OpenAsync<ClientForm>("Add Client", new Dictionary<string, object>(), new DialogOptions() { Width = "700px", Height = "400px" });
         if (result == true)
         {
-            await ReloadClients();
+            await LoadData(new Radzen.LoadDataArgs { Skip = 0, Top = 5 });
             NotificationService.Notify(NotificationSeverity.Success, "Success", "Client added successfully");
         }
     }
@@ -49,7 +53,7 @@
         var result = await DialogService.OpenAsync<ClientForm>("Edit Client", new Dictionary<string, object> { { "Client", client } }, new DialogOptions() { Width = "700px", Height = "400px" });
         if (result == true)
         {
-            await ReloadClients();
+            await LoadData(new Radzen.LoadDataArgs { Skip = 0, Top = 5 });
             NotificationService.Notify(NotificationSeverity.Success, "Success", "Client updated successfully");
         }
     }
@@ -60,7 +64,7 @@
         if (result == true)
         {
             await _clientService.DeleteClient(client.Id);
-            await ReloadClients();
+            await LoadData(new Radzen.LoadDataArgs { Skip = 0, Top = 5 });
             NotificationService.Notify(NotificationSeverity.Success, "Success", "Client deleted successfully");
         }
     }

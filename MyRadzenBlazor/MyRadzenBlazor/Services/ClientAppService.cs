@@ -18,18 +18,23 @@ namespace MyRadzenBlazor.Services
 
         private List<Cliente> LoadMockData()
         {
-            return new List<Cliente>
+            var clients = new List<Cliente>();
+
+            for (int i = 1; i <= 100; i++)
             {
-                new Cliente { Id = 1, Name = "John Doe", Email = "john.doe@example.com", Phone = "123-456-7890" },
-                new Cliente { Id = 2, Name = "Jane Smith", Email = "jane.smith@example.com", Phone = "234-567-8901" },
-                new Cliente { Id = 3, Name = "Samuel Green", Email = "samuel.green@example.com", Phone = "345-678-9012" },
-                new Cliente { Id = 4, Name = "Nancy Brown", Email = "nancy.brown@example.com", Phone = "456-789-0123" },
-                new Cliente { Id = 5, Name = "Michael White", Email = "michael.white@example.com", Phone = "567-890-1234" },
-                new Cliente { Id = 6, Name = "Linda Black", Email = "linda.black@example.com", Phone = "678-901-2345" },
-            };
+                clients.Add(new Cliente
+                {
+                    Id = i,
+                    Name = $"Client {i}",
+                    Email = $"client{i}@example.com",
+                    Phone = $"123-456-{i:D4}"
+                });
+            }
+
+            return clients;
         }
 
-        public List<Cliente> GetClients()
+        public List<Cliente> GetClients(int pageIndex, int pageSize)
         {
             if (!_cache.TryGetValue(CacheKey, out List<Cliente> clients))
             {
@@ -39,18 +44,21 @@ namespace MyRadzenBlazor.Services
                 _cache.Set(CacheKey, clients, cacheEntryOptions);
             }
 
-            return clients.OrderByDescending(c => c.Id).ToList();
+            return clients.OrderByDescending(c => c.Id)
+                          .Skip(pageIndex * pageSize)
+                          .Take(pageSize)
+                          .ToList();
         }
 
         public Cliente GetClientById(int id)
         {
-            var clients = GetClients();
+            var clients = GetClients(0, int.MaxValue); // Get all clients
             return clients.FirstOrDefault(c => c.Id == id);
         }
 
         public void CreateClient(Cliente client)
         {
-            var clients = GetClients();
+            var clients = GetClients(0, int.MaxValue); // Get all clients
             client.Id = clients.Max(c => c.Id) + 1;
             clients.Add(client);
             _cache.Set(CacheKey, clients);
@@ -58,7 +66,7 @@ namespace MyRadzenBlazor.Services
 
         public void UpdateClient(Cliente client)
         {
-            var clients = GetClients();
+            var clients = GetClients(0, int.MaxValue); // Get all clients
             var existingClient = clients.FirstOrDefault(c => c.Id == client.Id);
             if (existingClient != null)
             {
@@ -71,7 +79,7 @@ namespace MyRadzenBlazor.Services
 
         public void DeleteClient(int id)
         {
-            var clients = GetClients();
+            var clients = GetClients(0, int.MaxValue); // Get all clients
             var client = clients.FirstOrDefault(c => c.Id == id);
             if (client != null)
             {
