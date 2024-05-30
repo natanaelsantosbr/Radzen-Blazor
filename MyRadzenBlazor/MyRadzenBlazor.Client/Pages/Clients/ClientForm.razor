@@ -1,0 +1,39 @@
+﻿@page "/client-form"
+@inject ClientService _clientService
+@inject DialogService DialogService
+@code {
+    [Parameter]
+    public ClientRequest Client { get; set; } = new ClientRequest();
+
+    private async Task HandleSubmit()
+    {
+        if (Client.Id == 0)
+        {
+            await _clientService.CreateClient(Client);
+        }
+        else
+        {
+            await _clientService.UpdateClient(Client);
+        }
+
+        DialogService.Close(true);
+    }
+
+    private void Cancel()
+    {
+        DialogService.Close(false);
+    }
+}
+
+<RadzenTemplateForm Data="@Client" Submit="@((ClientRequest args) => HandleSubmit())">
+    <RadzenFieldset Text="Client Details">
+        <RadzenLabel Text="Name" />
+        <RadzenTextBox @bind-Value="Client.Name" Style="width: 100%;" />
+        <RadzenLabel Text="Email" />
+        <RadzenTextBox @bind-Value="Client.Email" Style="width: 100%;" />
+        <RadzenLabel Text="Phone" />
+        <RadzenTextBox @bind-Value="Client.Phone" Style="width: 100%;" />
+    </RadzenFieldset>
+    <RadzenButton Text="Save" Type="Submit" Icon="save" Style="margin-right: 0.5rem;" />
+    <RadzenButton Text="Cancel" Click="@Cancel" ButtonStyle="ButtonStyle.Danger" />
+</RadzenTemplateForm>

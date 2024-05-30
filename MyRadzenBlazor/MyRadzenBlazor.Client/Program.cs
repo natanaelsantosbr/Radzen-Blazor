@@ -12,7 +12,7 @@ builder.Services.AddScoped<DialogService>();
 
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<AuthService>();
-
+builder.Services.AddScoped<ClientService>();
 
 
 await builder.Build().RunAsync();

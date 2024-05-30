@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MyRadzenBlazor.Client.Models;
+using MyRadzenBlazor.Client.Requests;
 using Radzen;
 using System.Net.Http.Json;
 

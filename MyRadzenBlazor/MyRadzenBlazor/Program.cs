@@ -37,12 +37,15 @@ builder.Services.AddSingleton(sp =>
 
 
 builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<AuthAppService>();
 builder.Services.AddScoped<ProductAppService>();
+builder.Services.AddScoped<ClientAppService>();
 
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<ClientService>();
 
 var app = builder.Build();
 
