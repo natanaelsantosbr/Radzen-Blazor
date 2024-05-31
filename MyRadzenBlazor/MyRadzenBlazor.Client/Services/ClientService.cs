@@ -12,8 +12,10 @@ public class ClientService
         _httpClient = httpClient;
     }
 
-    public async Task<(List<ClientRequest>, int)> GetClients(int pageIndex, int pageSize, string name = null, string email = null)
+    public async Task<PagedResponse<ClientRequest>> GetClients(int pageIndex, int pageSize, string name = null, string email = null)
     {
+        var result = new PagedResponse<ClientRequest>(new List<ClientRequest>(), pageIndex, pageSize, 0);
+
         var query = HttpUtility.ParseQueryString(string.Empty);
         query["pageIndex"] = pageIndex.ToString();
         query["pageSize"] = pageSize.ToString();
@@ -24,10 +26,10 @@ public class ClientService
         if (response.IsSuccessStatusCode)
         {
             var pagedResponse = await response.Content.ReadFromJsonAsync<PagedResponse<ClientRequest>>();
-            return (pagedResponse.Data, pagedResponse.TotalCount);
+            return pagedResponse;
         }
 
-        return (new List<ClientRequest>(), 0);
+        return result;
     }
 
     public async Task<ClientRequest> GetClientById(int id)

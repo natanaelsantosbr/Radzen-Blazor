@@ -20,7 +20,7 @@
     </div>
 </RadzenTemplateForm>
 
-<RadzenGrid PageSize="5" AllowPaging="true" AllowSorting="true" Data="@clients" TItem="ClientRequest" Count="@totalClients" LoadData="@LoadData" Style="margin-top: 1rem;">
+<RadzenGrid @ref="grid"  PageSize="5" AllowPaging="true" AllowSorting="true" Data="@clients" TItem="ClientRequest" Count="@totalClients" LoadData="@LoadData" Style="margin-top: 1rem;">
     <Columns>
         <RadzenGridColumn TItem="ClientRequest" Property="Id" Title="ID" />
         <RadzenGridColumn TItem="ClientRequest" Property="Name" Title="Name" />
@@ -41,10 +41,17 @@
     private List<ClientRequest> clients;
     private int totalClients;
     private SearchModel searchModel = new SearchModel();
+    private RadzenGrid<ClientRequest> grid;
+
+    private void ReloadGrid()
+    {
+        grid.GoToPage(0); // Voltar para a primeira página
+        grid.Reload(); // Recarregar os dados do grid
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadData(new Radzen.LoadDataArgs { Skip = 0, Top = 5 });
+
     }
 
     private async Task LoadData(Radzen.LoadDataArgs args)
@@ -52,8 +59,9 @@
         var pageIndex = args.Skip / args.Top ?? 0;
         var pageSize = args.Top ?? 5;
         var result = await _clientService.GetClients(pageIndex, pageSize, searchModel.Name, searchModel.Email);
-        clients = result.Item1;
-        totalClients = result.Item2;
+
+        clients = result.Data;
+        totalClients = result.TotalCount;
     }
 
     private async Task SearchClients()
@@ -84,6 +92,7 @@
         {
             await LoadData(new Radzen.LoadDataArgs { Skip = 0, Top = 5 });
             NotificationService.Notify(NotificationSeverity.Success, "Success", "Client updated successfully");
+            ReloadGrid();
         }
     }
 

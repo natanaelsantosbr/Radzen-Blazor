@@ -4,10 +4,33 @@
 
 <RadzenLayout>
     <RadzenHeader>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-            <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
-                <RadzenLabel Text="MyApp"/>
-        </RadzenStack>
+        <ChildContent>
+            <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="0px">
+                <RadzenColumn Size="5">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+                        <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
+                        <RadzenLabel Text="MyApp" />
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn Size="7">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
+                        <RadzenProfileMenu>
+                            <Template>
+                                <RadzenGravatar Email="user@example.com">
+                                </RadzenGravatar>
+                            </Template>
+                            <ChildContent>
+                                <RadzenProfileMenuItem Text="Buttons" Path="buttons" Icon="account_circle"></RadzenProfileMenuItem>
+                                <RadzenProfileMenuItem Text="Menu" Path="menu" Icon="line_weight"></RadzenProfileMenuItem>
+                                <RadzenProfileMenuItem Text="FileInput" Path="fileinput" Icon="attach_file"></RadzenProfileMenuItem>
+                                <RadzenProfileMenuItem Text="Dialog" Path="dialog" Icon="perm_media"></RadzenProfileMenuItem>
+                                <RadzenProfileMenuItem Text="Notification" Path="notification" Icon="announcement"></RadzenProfileMenuItem>
+                            </ChildContent>
+                        </RadzenProfileMenu>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+        </ChildContent>
     </RadzenHeader>
     <RadzenSidebar @bind-Expanded="@sidebar1Expanded">
         <NavMenu />
@@ -20,6 +43,8 @@
     <RadzenFooter>
         <FooterLayout />
     </RadzenFooter>
+
+
 </RadzenLayout>
 
 @code {
