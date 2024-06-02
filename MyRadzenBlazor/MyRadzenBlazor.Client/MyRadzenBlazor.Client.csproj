@@ -17,4 +17,8 @@
     <ProjectReference Include="..\..\MyRadzenBlazor.Shared\MyRadzenBlazor.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Shared\" />
+  </ItemGroup>
+
 </Project>

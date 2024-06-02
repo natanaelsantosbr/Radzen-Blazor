@@ -1,0 +1,15 @@
+﻿@{
+    var heigth = string.IsNullOrWhiteSpace(Height) ? "20px;" : $"{Height}";
+    var width = string.IsNullOrWhiteSpace(Width) ? "100%" : $"{Width}";
+    var style = $"height: {heigth}px; width: {width}%";
+}
+
+<div class="skeleton" style="@style"></div>
+
+@code {
+    [Parameter]
+    public string Width { get; set; }
+
+    [Parameter]
+    public string Height { get; set; }
+}

@@ -1,17 +1,286 @@
 ﻿@page "/"
+@using System.Text.Json.Serialization
+@using System.Text.RegularExpressions
 
 @inject NavigationManager Navigation
 @inject DialogService DialogService
-<PageTitle>Home</PageTitle>
+<PageTitle>Dashboard Example</PageTitle>
 
-<h1>Hello, world!</h1>
+<PageTitle>Sample Blazor Dashboard | Free UI Components by Radzen</PageTitle>
+<HeadContent>
+    <meta name="description" content="Rich dashboard created with the Radzen Blazor Components library.">
+</HeadContent>
+<RadzenText TextStyle="TextStyle.H2" TagName="TagName.H1">
+    Titulo
+</RadzenText>
 
-Welcome to your new app.
+<RadzenStack Gap="1rem" Style="position: relative">
+    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+        <RadzenRow JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Class="rz-mb-4">
+            <RadzenColumn Size="12" SizeSM="10">
+                <RadzenText TextStyle="TextStyle.Subtitle1" Class="rz-m-0">
+                    Sample dashboard that uses data from the <a href="https://github.com/dotnet/aspnetcore/issues" target="_blank">ASP.NET GitHub repository</a>. Data is updated 24 hours.
+                </RadzenText>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeSM="2">
+                <RadzenDropDown Style="width: 100%" Data=@filter @bind-Value="selectedState" Change=@FilterIssues></RadzenDropDown>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+            <RadzenCard Style="position: relative;">
+                <RadzenText TextStyle="TextStyle.H6">Open Issues</RadzenText>
+                <RadzenText TextStyle="TextStyle.H2" Class="rz-color-success" Style="position: absolute; right: 1.5rem; top: 1rem;">10</RadzenText>
+                <RadzenChart Style="width: 100%; height: 120px; margin-bottom: -30px;">
+                    <RadzenColumnSeries Data=@openIssuesByDate ValueProperty="Count" CategoryProperty="Week" Title="Issues" Fill="var(--rz-success)" />
+                    <RadzenValueAxis Visible="false" />
+                    <RadzenCategoryAxis Visible="false" />
+                    <RadzenColumnOptions Margin="10" />
+                    <RadzenLegend Visible="false" />
+                </RadzenChart>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+            <RadzenCard Style="position: relative;">
+                <RadzenText TextStyle="TextStyle.H6">Closed Issues</RadzenText>
+                <RadzenText TextStyle="TextStyle.H2" Class="rz-color-danger" Style="position: absolute; right: 1.5rem; top: 1rem;">5</RadzenText>
+                <RadzenChart Style="width: 100%; height: 120px; margin-bottom: -30px;">
+                    <RadzenColumnSeries Data=@closedIssuesByDate ValueProperty="Count" CategoryProperty="Week" Title="Issues" Fill="var(--rz-danger)" />
+                    <RadzenValueAxis Visible="false" />
+                    <RadzenCategoryAxis Visible="false" />
+                    <RadzenColumnOptions Margin="10" />
+                    <RadzenLegend Visible="false" />
+                </RadzenChart>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+            <RadzenCard Style="position: relative;">
+                <RadzenText TextStyle="TextStyle.H6">All Issues</RadzenText>
+                <RadzenText TextStyle="TextStyle.H2" Style="position: absolute; right: 1.5rem; top: 1rem;">15</RadzenText>
+                <RadzenChart Style="width: 100%; height: 120px; margin-bottom: -30px;">
+                    <RadzenLineSeries Data=@openIssuesByDate ValueProperty="Count" CategoryProperty="Week" Title="Open Issues" Smooth="true" Stroke="var(--rz-success)" />
+                    <RadzenLineSeries Data=@closedIssuesByDate ValueProperty="Count" CategoryProperty="Week" Title="Closed Issues" Smooth="true" Stroke="var(--rz-danger)" />
+                    <RadzenValueAxis Visible="false" />
+                    <RadzenCategoryAxis Visible="false" />
+                    <RadzenLegend Visible="false" />
+                </RadzenChart>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.H6">Progress</RadzenText>
+                <RadzenArcGauge Style="width: 100%; height: 120px; margin-top: -30px;">
+                    <RadzenArcGaugeScale Max="1" Y="0.8" Radius="2">
+                        <RadzenArcGaugeScaleValue Value=@closeRatio FormatString="{0:P0}" />
+                    </RadzenArcGaugeScale>
+                </RadzenArcGauge>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+            <RadzenCard Style="height: 280px">
+                <RadzenText TextStyle="TextStyle.H6">Top Issue Labels</RadzenText>
+                <RadzenChart Style="width: 100%; height: 200px">
+                    <RadzenDonutSeries Data=@labelGroups CategoryProperty="Label" ValueProperty="Count" Title="Issues" Fills=@labelColors />
+                </RadzenChart>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+            <RadzenCard Style="height: 280px">
+                <RadzenText TextStyle="TextStyle.H6">Top Contributors</RadzenText>
+                <RadzenChart Style="width: 100%; height: 200px">
+                    <RadzenPieSeries Data=@openByGroups CategoryProperty="Name" ValueProperty="Count" Title="Issues" />
+                </RadzenChart>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+            <RadzenCard Style="height: 280px">
+                <RadzenText TextStyle="TextStyle.H6">Most Active Member</RadzenText>
+                <div Class="rz-text-align-center">
+                    <img Style="width: 120px; border-radius: 50%; margin: 20px 0;" src="https://avatars.githubusercontent.com/u/78992596?v=4" alt="Most active member avatar" />
+                    <h4>
+                        X2
+                    </h4>
+                </div>
+            </RadzenCard>
+        </RadzenColumn>
+        
+    </RadzenRow>
+</RadzenStack>
 
-<RadzenButton Text="Hi" Click="@ButtonClicked"></RadzenButton>
 @code {
-    void ButtonClicked()
+        bool isLoading = true;
+        IEnumerable<Issue> issues;
+        IEnumerable<string> filter = new List<string>();
+        string selectedState = "filter";
+        IEnumerable<IssueGroup> openIssuesByDate;
+        IEnumerable<IssueGroup> closedIssuesByDate;
+        double closeRatio = 0;
+        IEnumerable<LabelGroup> labelGroups;
+        IEnumerable<string> labelColors;
+        IEnumerable<UserGroup> openByGroups;
+        User mostActiveMember;
+
+    protected override async Task OnInitializedAsync()
     {
-        DialogService.Alert("Button clicked!"); 
+        filter = new List<string> { "Filter 1", "Filter 2", "Filter 3" };
+    }
+
+    void FilterIssues()
+    {
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var issues = new List<Issue>
+            {
+                new Issue { CreatedAt = DateTime.Now.AddDays(-1), ClosedAt = null, Labels = new List<Label> { new Label { Name = "Label 1", Color = "#ff0000" } }, User = new User{ Login = "x1", AvatarUrl = "https://avatars.githubusercontent.com/u/78992596?v=4" } },
+                new Issue { CreatedAt = DateTime.Now.AddDays(-2), ClosedAt = DateTime.Now.AddDays(-1), Labels = new List<Label> { new Label { Name = "Label 2", Color = "#00ff00" } }, User = new User{ Login = "x2", AvatarUrl = "https://avatars.githubusercontent.com/u/447251?v=4" } },
+                new Issue { CreatedAt = DateTime.Now.AddDays(-3), ClosedAt = DateTime.Now.AddDays(-2), Labels = new List<Label> { new Label { Name = "Label 3", Color = "#0000ff" } }, User = new User{ Login = "x3", AvatarUrl = "https://avatars.githubusercontent.com/u/9450430?v=4" } },
+                new Issue { CreatedAt = DateTime.Now.AddDays(-4), ClosedAt = DateTime.Now.AddDays(-3), Labels = new List<Label> { new Label { Name = "Label 4", Color = "#ff00ff" } }, User = new User{ Login = "x4", AvatarUrl = "https://avatars.githubusercontent.com/u/5879559?v=4" } }
+            };
+
+            openIssuesByDate = new List<IssueGroup>
+            {
+                new IssueGroup { Count = 10, Week = DateTime.Now.AddDays(-7) },
+                new IssueGroup { Count = 20, Week = DateTime.Now.AddDays(-14) },
+                new IssueGroup { Count = 30, Week = DateTime.Now.AddDays(-21) },
+                new IssueGroup { Count = 40, Week = DateTime.Now.AddDays(-28) },
+            };
+
+            closedIssuesByDate = new List<IssueGroup>
+            {
+                new IssueGroup { Count = 5, Week = DateTime.Now.AddDays(-7) },
+                new IssueGroup { Count = 10, Week = DateTime.Now.AddDays(-14) },
+                new IssueGroup { Count = 15, Week = DateTime.Now.AddDays(-21) },
+                new IssueGroup { Count = 20, Week = DateTime.Now.AddDays(-28) },
+            };
+
+            closeRatio = openIssuesByDate.Count() / (double)closedIssuesByDate.Count();
+
+
+
+            labelGroups = issues.SelectMany(issue => issue.Labels)
+                            .GroupBy(label => label, new LabelComparer())
+                            .Select(group => new LabelGroup { Label = Regex.Replace(group.Key.Name, ":\\w+:", ""), Color = $"#{group.Key.Color}", Count = group.Count() })
+                            .OrderByDescending(group => group.Count)
+                            .Take(5);
+
+
+            openByGroups = issues.GroupBy(issue => issue.User.Login)
+                                .Select(group => new UserGroup { Name = group.Key, Count = group.Count() })
+                                .OrderByDescending(group => group.Count)
+                                .Take(7);
+
+            labelColors = labelGroups.Select(label => label.Color);
+
+            var random = new Random();
+            var mostActiveMember = issues.FirstOrDefault().User;
+
+
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    class IssueGroup
+    {
+        public int Count { get; set; }
+        public DateTime Week { get; set; }
+    }
+
+    class LabelGroup
+    {
+        public int Count { get; set; }
+        public string Label { get; set; }
+        public string Color { get; set; }
+    }
+
+    public class Issue
+    {
+        [JsonPropertyName("html_url")]
+        public string Url { get; set; }
+
+        [JsonPropertyName("created_at")]
+        public DateTime CreatedAt { get; set; }
+
+        [JsonPropertyName("closed_at")]
+        public DateTime? ClosedAt { get; set; }
+
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+
+        [JsonPropertyName("labels")]
+        public IEnumerable<Label> Labels { get; set; }
+
+        [JsonPropertyName("user")]
+        public User User { get; set; }
+
+        [JsonPropertyName("assignees")]
+        public IEnumerable<User> Assignees { get; set; }
+
+        [JsonPropertyName("state")]
+        public IssueState State { get; set; }
+    }
+
+    public class Label
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("color")]
+        public string Color { get; set; }
+    }
+
+    public class User
+    {
+        [JsonPropertyName("avatar_url")]
+        public string AvatarUrl { get; set; }
+
+        [JsonPropertyName("login")]
+        public string Login { get; set; }
+    }
+
+    public enum IssueState
+    {
+        Open,
+        Closed,
+        All
+    }
+
+    class UserGroup
+    {
+        public int Count { get; set; }
+        public string Name { get; set; }
+    }
+
+    class LabelComparer : IEqualityComparer<Label>
+    {
+        public bool Equals(Label x, Label y)
+        {
+            return x.Name.Equals(y.Name);
+        }
+
+        public int GetHashCode(Label user)
+        {
+            return user.Name.GetHashCode();
+        }
+    }
+
+    class UserComparer : IEqualityComparer<User>
+    {
+        public bool Equals(User x, User y)
+        {
+            return x.Login.Equals(y.Login);
+        }
+
+        public int GetHashCode(User user)
+        {
+            return user.Login.GetHashCode();
+        }
     }
 }

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyRadzenBlazor", "MyRadzenB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyRadzenBlazor.Client", "MyRadzenBlazor\MyRadzenBlazor.Client\MyRadzenBlazor.Client.csproj", "{3C9707D8-156C-47A2-A540-D8A66115E4CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyRadzenBlazor.Shared", "MyRadzenBlazor.Shared\MyRadzenBlazor.Shared.csproj", "{FCBBF4A7-4FC8-4650-98D6-A2F760C1F18D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyRadzenBlazor.Shared", "MyRadzenBlazor.Shared\MyRadzenBlazor.Shared.csproj", "{FCBBF4A7-4FC8-4650-98D6-A2F760C1F18D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
