@@ -10,22 +10,17 @@
 <HeadContent>
     <meta name="description" content="Rich dashboard created with the Radzen Blazor Components library.">
 </HeadContent>
-<RadzenText TextStyle="TextStyle.H2" TagName="TagName.H1">
-    Titulo
-</RadzenText>
 
 <RadzenStack Gap="1rem" Style="position: relative">
-    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
-        <RadzenRow JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Class="rz-mb-4">
-            <RadzenColumn Size="12" SizeSM="10">
-                <RadzenText TextStyle="TextStyle.Subtitle1" Class="rz-m-0">
-                    Sample dashboard that uses data from the <a href="https://github.com/dotnet/aspnetcore/issues" target="_blank">ASP.NET GitHub repository</a>. Data is updated 24 hours.
-                </RadzenText>
-            </RadzenColumn>
-            <RadzenColumn Size="12" SizeSM="2">
-                <RadzenDropDown Style="width: 100%" Data=@filter @bind-Value="selectedState" Change=@FilterIssues></RadzenDropDown>
-            </RadzenColumn>
-        </RadzenRow>
+    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Class="rz-mb-4">
+        <RadzenColumn Size="12" SizeSM="10">
+            <RadzenText TextStyle="TextStyle.Subtitle1" Class="rz-m-0">
+                Sample dashboard that uses data from the <a href="https://github.com/dotnet/aspnetcore/issues" target="_blank">ASP.NET GitHub repository</a>. Data is updated 24 hours.
+            </RadzenText>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeSM="2">
+            <RadzenDropDown Style="width: 100%" Data=@filter @bind-Value="selectedState" Change=@FilterIssues></RadzenDropDown>
+        </RadzenColumn>
     </RadzenRow>
     <RadzenRow>
         <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
