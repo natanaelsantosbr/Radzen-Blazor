@@ -44,9 +44,9 @@
     bool sidebar1Expanded = true;
 
     private async Task Logout()
-    {
-        Console.WriteLine("Logout success!");
-        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Sair com sucesso", Detail = $"Sair com sucesso 2" });
+    {        
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Logout Realizado", Detail = "Você saiu do sistema com sucesso." });
+        NavigationManager.NavigateTo("/login");
     }
 
     void OnClick(RadzenSplitButtonItem item)
