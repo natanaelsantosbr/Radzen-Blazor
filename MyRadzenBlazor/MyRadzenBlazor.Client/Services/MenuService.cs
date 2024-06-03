@@ -33,11 +33,11 @@ namespace MyRadzenBlazor.Client.Services
                 },
                 new MenuItem
                 {
-                    Text = "Forms", Icon = "form", Children = new List<MenuItem>
+                    Text = "Forms", Icon = "table_rows", Children = new List<MenuItem>
                     {
                         new MenuItem { Text = "Clientes", Icon = "groups", Path = "clients" },
                         new MenuItem { Text = "Products", Icon = "category", Path = "product-search" },
-                        new MenuItem { Text = "TemplateForm", Icon = "template", Path = "TemplateForm" }
+                        new MenuItem { Text = "grid_guides", Icon = "template", Path = "TemplateForm" }
                     }
                 },
                 new MenuItem { Text = "Usuários", Icon = "person", Path = "users" },
