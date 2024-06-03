@@ -1,11 +1,12 @@
-﻿@using System.Globalization
-@using System.Text
+﻿@inject MenuService MenuService
+
 <style>
-    .custom-badge {
-        margin-left: 2px;
+.custom-badge {
+        margin-left: 0.5rem;
         font-size: 8px;
     }
 </style>
+
 <div class="rz-p-4">
     <RadzenTextBox @bind-Value="searchText" Placeholder="Search..." Style="width: 100%;" @oninput="OnInput" />
 </div>
@@ -13,76 +14,77 @@
 <RadzenPanelMenu>
     @foreach (var item in FilteredMenuItems)
     {
-        if (IsMatch(item, searchText))
+        if (MenuService.IsMatch(item, searchText))
         {
             <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon" Path="@item.Path">
                 <Template>
                     @item.Text
                     @if (item.IsNew)
                     {
-                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" class="custom-badge"/>
+                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
                     }
                     @if (item.IsUpdated)
                     {
-                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" class="custom-badge" />
+                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
                     }
                 </Template>
                 <ChildContent>
-                    @if(item.Children != null)
+                    @if (item.Children != null && item.Children.Any())
                     {
-                        foreach (var child in item.Children)
+                        @foreach (var child in item.Children)
                         {
-                            if (IsMatch(child, searchText))
+                            if (MenuService.IsMatch(child, searchText))
                             {
                                 <RadzenPanelMenuItem Text="@child.Text" Icon="@child.Icon" Path="@child.Path">
                                     <Template>
                                         @child.Text
                                         @if (child.IsNew)
                                         {
-                                            <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" class="custom-badge" />
+                                            <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
                                         }
                                         @if (child.IsUpdated)
                                         {
-                                            <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" class="custom-badge" />
+                                            <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
                                         }
                                     </Template>
                                 </RadzenPanelMenuItem>
                             }
                         }
                     }
-                   
+                    
                 </ChildContent>
+               
             </RadzenPanelMenuItem>
         }
-        else if (item.Children != null && item.Children.Any(child => IsMatch(child, searchText)))
+        else if (item.Children != null && item.Children.Any(child => MenuService.IsMatch(child, searchText)))
         {
             <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon">
                 <Template>
                     @item.Text
                     @if (item.IsNew)
                     {
-                        <RadzenBadge Text="New1" BadgeStyle="BadgeStyle.Info" />
+                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
                     }
                     @if (item.IsUpdated)
                     {
-                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" />
+                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
                     }
                 </Template>
                 <ChildContent>
                     @foreach (var child in item.Children)
                     {
-                        if (IsMatch(child, searchText))
+                        if (MenuService.IsMatch(child, searchText))
                         {
                             <RadzenPanelMenuItem Text="@child.Text" Icon="@child.Icon" Path="@child.Path">
                                 <Template>
                                     @child.Text
                                     @if (child.IsNew)
                                     {
-                                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" />
+                                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
                                     }
                                     @if (child.IsUpdated)
                                     {
-                                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" />
+                                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
                                     }
                                 </Template>
                             </RadzenPanelMenuItem>
@@ -96,93 +98,11 @@
 
 @code {
     private string searchText = string.Empty;
-    private List<MenuItem> menuItems = new List<MenuItem>
-    {
-        new MenuItem { Text = "Home", Icon = "home", Path = "", IsNew = true },
-        new MenuItem { Text = "Dashboard", Icon = "dashboard", Path = "dashboard", IsUpdated = true },
-        new MenuItem { Text = "Counter", Icon = "alarm", Path = "counter" },
-        new MenuItem { Text = "Weather", Icon = "build", Path = "weather" },
-        new MenuItem
-        {
-            Text = "Layout", Icon = "dns", Children = new List<MenuItem>
-            {
-                new MenuItem { Text = "Stack", Icon = "list", Path = "stack" },
-                new MenuItem { Text = "Row", Icon = "line_weight", Path = "row" },
-                new MenuItem { Text = "Column", Icon = "line_style", Path = "column" }
-            }
-        },
-        new MenuItem
-        {
-            Text = "Navigation", Icon = "navigation", Children = new List<MenuItem>
-            {
-                new MenuItem { Text = "Login", Icon = "login", Path = "login" }
-            }
-        },
-        new MenuItem
-        {
-            Text = "Forms", Icon = "drag_handle", Children = new List<MenuItem>
-            {
-                new MenuItem { Text = "Clientes", Icon = "groups", Path = "clients" },
-                new MenuItem { Text = "Products", Icon = "category", Path = "product-search" },
-                new MenuItem { Text = "TemplateForm", Icon = "temformat_list_bulletedplate", Path = "TemplateForm" }
-            }
-        },
-        new MenuItem { Text = "Usuários", Icon = "person", Path = "users" },
-        new MenuItem { Text = "Relatórios", Icon = "bar_chart", Path = "reports" },
-        new MenuItem { Text = "Configurações", Icon = "settings", Path = "settings" },
-        new MenuItem { Text = "Notificações", Icon = "notifications", Path = "notifications" },
-        new MenuItem { Text = "Pedidos", Icon = "shopping_cart", Path = "orders" },
-        new MenuItem { Text = "Inventário", Icon = "inventory", Path = "inventory" },
-        new MenuItem { Text = "Financeiro", Icon = "account_balance", Path = "finance" },
-        new MenuItem { Text = "Suporte", Icon = "support", Path = "support" },
-        new MenuItem { Text = "Perfil do Usuário", Icon = "account_circle", Path = "profile" }
-    };
 
-    private IEnumerable<MenuItem> FilteredMenuItems =>
-        string.IsNullOrWhiteSpace(searchText)
-            ? menuItems
-            : menuItems.Where(item => IsMatch(item, searchText) ||
-                                      (item.Children != null && item.Children.Any(child => IsMatch(child, searchText))));
-
-    private bool IsMatch(MenuItem item, string searchText)
-    {
-        var normalizedSearchText = RemoveDiacritics(searchText);
-        return RemoveDiacritics(item.Text).Contains(normalizedSearchText, StringComparison.OrdinalIgnoreCase) ||
-               (item.Children != null && item.Children.Any(child => RemoveDiacritics(child.Text).Contains(normalizedSearchText, StringComparison.OrdinalIgnoreCase)));
-    }
+    private IEnumerable<MenuItem> FilteredMenuItems => MenuService.GetFilteredMenuItems(searchText);
 
     private void OnInput(ChangeEventArgs e)
     {
         searchText = e.Value.ToString();
-    }
-
-    private string RemoveDiacritics(string text)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            return text;
-        }
-        var normalizedText = text.Normalize(NormalizationForm.FormD);
-        var stringBuilder = new StringBuilder();
-
-        foreach (var c in normalizedText)
-        {
-            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-            {
-                stringBuilder.Append(c);
-            }
-        }
-
-        return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
-    }
-
-    public class MenuItem
-    {
-        public string Text { get; set; }
-        public string Icon { get; set; }
-        public string Path { get; set; }
-        public bool IsNew { get; set; }
-        public bool IsUpdated { get; set; }
-        public List<MenuItem> Children { get; set; }
     }
 }

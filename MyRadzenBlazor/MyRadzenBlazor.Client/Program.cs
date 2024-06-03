@@ -13,6 +13,6 @@ builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ClientService>();
-
+builder.Services.AddSingleton<MenuService>();
 
 await builder.Build().RunAsync();
