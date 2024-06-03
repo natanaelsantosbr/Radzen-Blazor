@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
-
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
 <RadzenComponents />
 
 <RadzenLayout>
@@ -14,15 +15,15 @@
                 </RadzenColumn>
                 <RadzenColumn Size="7">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
-                        <RadzenProfileMenu>
-                            <Template>
-                                <RadzenIcon Icon="account_circle" Style="font-size:2rem"></RadzenIcon>
-                            </Template>
+                        <RadzenSplitButton Click=@(args => OnClick(args)) AlwaysOpenPopup="true" Icon="account_circle">
                             <ChildContent>
-                                <RadzenProfileMenuItem Text="Minha Conta" Path="Identity/Account/Manage" Icon="manage_accounts"></RadzenProfileMenuItem>
-                                <RadzenProfileMenuItem Text="Sair" Icon="power_settings_new" onclick="Logout()"></RadzenProfileMenuItem>
+                                <RadzenSplitButtonItem Text="Dashboard" Value="dashboard" Icon="dashboard" />
+                                <RadzenSplitButtonItem Text="Configurações" Value="settings" Icon="settings" />
+                                <RadzenSplitButtonItem Text="Ajuda/Suporte" Value="help_outline" Icon="help_outline" />
+                                <RadzenSplitButtonItem Text="Sair" Value="exit_to_app" Icon="exit_to_app" />
                             </ChildContent>
-                        </RadzenProfileMenu>
+                        </RadzenSplitButton>
+
                     </RadzenStack>
                 </RadzenColumn>
             </RadzenRow>
@@ -49,5 +50,28 @@
     private async Task Logout()
     {
         Console.WriteLine("Logout success!");
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Sair com sucesso", Detail = $"Sair com sucesso 2" });
+    }
+
+    void OnClick(RadzenSplitButtonItem item)
+    {
+        if (item != null)
+        {
+            switch (item.Value)
+            {
+                case "dashboard":
+                    NavigationManager.NavigateTo("/");
+                    break;
+                case "settings":
+                    NavigationManager.NavigateTo("/settings");
+                    break;
+                case "help_outline":
+                    NavigationManager.NavigateTo("/help");
+                    break;
+                case "exit_to_app":
+                    Logout();
+                    break;
+            }
+        }
     }
 }
