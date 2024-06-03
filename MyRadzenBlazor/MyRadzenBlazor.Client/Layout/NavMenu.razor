@@ -1,7 +1,7 @@
 ﻿@inject MenuService MenuService
 
 <style>
-.custom-badge {
+    .custom-badge {
         margin-left: 0.5rem;
         font-size: 8px;
     }
@@ -14,63 +14,21 @@
 <RadzenPanelMenu>
     @foreach (var item in FilteredMenuItems)
     {
-        if (MenuService.IsMatch(item, searchText))
-        {
-            <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon" Path="@item.Path">
-                <Template>
-                    @item.Text
-                    @if (item.IsNew)
-                    {
-                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
-                    }
-                    @if (item.IsUpdated)
-                    {
-                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
-                    }
-                </Template>
-                <ChildContent>
-                    @if (item.Children != null && item.Children.Any())
-                    {
-                        @foreach (var child in item.Children)
-                        {
-                            if (MenuService.IsMatch(child, searchText))
-                            {
-                                <RadzenPanelMenuItem Text="@child.Text" Icon="@child.Icon" Path="@child.Path">
-                                    <Template>
-                                        @child.Text
-                                        @if (child.IsNew)
-                                        {
-                                            <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
-                                        }
-                                        @if (child.IsUpdated)
-                                        {
-                                            <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
-                                        }
-                                    </Template>
-                                </RadzenPanelMenuItem>
-                            }
-                        }
-                    }
-                    
-                </ChildContent>
-               
-            </RadzenPanelMenuItem>
-        }
-        else if (item.Children != null && item.Children.Any(child => MenuService.IsMatch(child, searchText)))
-        {
-            <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon">
-                <Template>
-                    @item.Text
-                    @if (item.IsNew)
-                    {
-                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
-                    }
-                    @if (item.IsUpdated)
-                    {
-                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
-                    }
-                </Template>
-                <ChildContent>
+        <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon" Path="@item.Path" Expanded="@item.Expanded">
+            <Template>
+                @item.Text
+                @if (item.IsNew)
+                {
+                    <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
+                }
+                @if (item.IsUpdated)
+                {
+                    <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
+                }
+            </Template>
+            <ChildContent>
+                @if (item.Children != null && item.Children.Any())
+                {
                     @foreach (var child in item.Children)
                     {
                         if (MenuService.IsMatch(child, searchText))
@@ -90,9 +48,9 @@
                             </RadzenPanelMenuItem>
                         }
                     }
-                </ChildContent>
-            </RadzenPanelMenuItem>
-        }
+                }
+            </ChildContent>
+        </RadzenPanelMenuItem>
     }
 </RadzenPanelMenu>
 
