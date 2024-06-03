@@ -1,0 +1,14 @@
+﻿@page "/logout"
+
+@layout EmptyLayout
+@inject NotificationService _notificationService
+@inject NavigationManager _navigationManager
+<h3>Saindo...</h3>
+
+@code {
+    protected override void OnInitialized()
+    {
+        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Logout Realizado", Detail = "Você saiu do sistema com sucesso." });
+        _navigationManager.NavigateTo("/login");
+    }
+}

@@ -15,14 +15,17 @@
                 </RadzenColumn>
                 <RadzenColumn Size="7">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
-                        <RadzenSplitButton Click=@(args => OnClick(args)) AlwaysOpenPopup="true" Icon="account_circle">
+                        <RadzenProfileMenu>
+                            <Template>
+                                <RadzenIcon Icon="account_circle" Style="font-size:2rem"></RadzenIcon>
+                            </Template>
                             <ChildContent>
-                                <RadzenSplitButtonItem Text="Dashboard" Value="dashboard" Icon="dashboard" />
-                                <RadzenSplitButtonItem Text="Configurações" Value="settings" Icon="settings" />
-                                <RadzenSplitButtonItem Text="Ajuda/Suporte" Value="help_outline" Icon="help_outline" />
-                                <RadzenSplitButtonItem Text="Sair" Value="exit_to_app" Icon="exit_to_app" />
+                                <RadzenProfileMenuItem Text="Dashboard" Path="" Icon="dashboard" />
+                                <RadzenProfileMenuItem Text="Configurações" Path="settings" Icon="settings" />
+                                <RadzenProfileMenuItem Text="Ajuda/Suporte" Path="help" Icon="help_outline" />
+                                <RadzenProfileMenuItem Text="Sair" Path="/logout" Icon="exit_to_app" />
                             </ChildContent>
-                        </RadzenSplitButton>
+                        </RadzenProfileMenu>
                     </RadzenStack>
                 </RadzenColumn>
             </RadzenRow>
