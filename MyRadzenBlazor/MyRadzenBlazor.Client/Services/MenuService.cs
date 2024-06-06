@@ -37,7 +37,7 @@ namespace MyRadzenBlazor.Client.Services
                     {
                         new MenuItem { Text = "Clientes", Icon = "groups", Path = "clients" },
                         new MenuItem { Text = "Products", Icon = "category", Path = "product-search" },
-                        new MenuItem { Text = "grid_guides", Icon = "template", Path = "TemplateForm" }
+                        new MenuItem { Text = "TemplateForm", Icon = "contact_mail", Path = "TemplateForm" }
                     }
                 },
                 new MenuItem { Text = "Usuários", Icon = "person", Path = "users" },
