@@ -2,18 +2,21 @@
 @inject ClientService _clientService
 @inject DialogService DialogService
 @inject NotificationService NotificationService
+@inject TooltipService tooltipService
 <PageTitle>Clientes</PageTitle>
 
-<RadzenRow JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Class="rz-mb-4">
-                <RadzenColumn Size="12" SizeSM="10">
-                    <RadzenText TextStyle="TextStyle.DisplayH5">Lista de Clientes</RadzenText>
-                    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">Veja os clientes que estão na sua base de dados</RadzenText>
-                </RadzenColumn>
-                <RadzenColumn Size="12" SizeSM="2">
-                    <RadzenButton Text="Add Client" Icon="add_circle" Click="@(args => AddClient())" Style="margin-top: 1rem;" />
-                    <RadzenButton Icon="filter_alt" Text="Filtro" Click="@OpenSideDialog" />
-                </RadzenColumn>
+<RadzenRow JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+    <RadzenColumn Size="8">
+        <RadzenText TextStyle="TextStyle.DisplayH5">Lista de Clientes</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">Veja os clientes que estão na sua base de dados</RadzenText>
+    </RadzenColumn>
+    <RadzenColumn Size="4" class="rz-text-align-end">
+        <RadzenButton Size="ButtonSize.Large" Icon="add_circle" Click="@(args => AddClient())" MouseEnter="@(args => ShowTooltip(args, "Clique para adicionar um novo cliente") )" />
+        <RadzenButton Size="ButtonSize.Large" Icon="filter_alt" Click="@OpenSideDialog"/>
+    </RadzenColumn>
 </RadzenRow>
+
+
 
 <RadzenGrid @ref="grid"  PageSize="5" AllowPaging="true" AllowSorting="true" Data="@clients" TItem="ClientRequest" Count="@totalClients" LoadData="@LoadData" Style="margin-top: 1rem;">
     <Columns>
@@ -23,8 +26,18 @@
         <RadzenGridColumn TItem="ClientRequest" Property="Phone" Title="Phone" />
         <RadzenGridColumn TItem="ClientRequest" Title="Actions">
             <Template Context="client">
-                <RadzenButton Icon="edit" Click="@(args => EditClient(client))" Style="margin-right: 0.5rem;" />
-                <RadzenButton Icon="delete" Click="@(args => ConfirmDelete(client))" ButtonStyle="ButtonStyle.Danger" />
+<RadzenButton 
+    Icon="edit" 
+    Click="@(args => EditClient(client))" 
+    Style="margin-right: 0.5rem;"  
+    MouseEnter="@(args => ShowTooltip(args, $"Clique para editar os detalhes do cliente '{client.Name}'") )"  
+/>
+<RadzenButton 
+    Icon="delete" 
+    Click="@(args => ConfirmDelete(client))" 
+    ButtonStyle="ButtonStyle.Danger" 
+    MouseEnter="@(args => ShowTooltip(args, $"Clique para remover o cliente '{client.Name}' da base de dados") )" 
+/>
             </Template>
         </RadzenGridColumn>
     </Columns>
@@ -33,6 +46,9 @@
 
 
 @code {
+    void ShowTooltip(ElementReference elementReference, string message, TooltipOptions options = null) => tooltipService.Open(elementReference, message, options);
+    
+    
     private async Task OpenSideDialog()
     {
         var options = new SideDialogOptions

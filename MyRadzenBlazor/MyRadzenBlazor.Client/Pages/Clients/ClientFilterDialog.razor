@@ -24,21 +24,38 @@
     }
 }
 
-<div class="rz-p-4">
-    <RadzenTemplateForm Data="@SearchModel" Submit="@((SearchModel args) => Search())">
-        <div class="row">
-            <div class="col-md-12">
-                <RadzenLabel Text="Name" />
-                <RadzenTextBox @bind-Value="SearchModel.Name" Style="width: 100%;" />
-            </div>
-            <div class="col-md-12">
-                <RadzenLabel Text="Email" />
-                <RadzenTextBox @bind-Value="SearchModel.Email" Style="width: 100%;" />
-            </div>
-            <div class="col-md-12" style="margin-top: 2rem;">
-                <RadzenButton Text="Search" Icon="search" ButtonType="ButtonType.Submit" />
-                <RadzenButton Text="Clear" Icon="clear" Click="@Clear" />
+
+<RadzenTemplateForm Data="@SearchModel" Submit="@((SearchModel args) => Search())">
+    <div class="row">
+        <div class="col-md-12">
+            <RadzenLabel Text="Name" />
+            <RadzenTextBox @bind-Value="SearchModel.Name" Style="width: 100%;" />
+        </div>
+        <div class="col-md-12">
+            <RadzenLabel Text="Email" />
+            <RadzenTextBox @bind-Value="SearchModel.Email" Style="width: 100%;" />
+        </div>
+    </div>
+    <div class="row" style="margin-top: 30px;">
+        <div class="col-md-12 button-row">
+            <RadzenButton Variant="Variant.Text" ButtonStyle="ButtonStyle.Dark" Text="Cancel" Click="@(_ => Service.CloseSide())" />
+            <div class="ml-auto">
+                <RadzenButton Variant="Variant.Text" ButtonStyle="ButtonStyle.Primary" Text="Clear" Click="@Clear" Style="margin-right: 0.5rem;" />
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Text="Search" Icon="search" ButtonType="ButtonType.Submit" />
             </div>
         </div>
-    </RadzenTemplateForm>
-</div>
+    </div>
+</RadzenTemplateForm>
+
+<style>
+    .button-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .ml-auto {
+        margin-left: auto;
+        display: flex;
+    }
+</style>
+
