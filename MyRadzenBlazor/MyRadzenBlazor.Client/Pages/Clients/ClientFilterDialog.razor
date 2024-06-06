@@ -1,0 +1,44 @@
+﻿@page "/client-filter-dialog"
+@inherits RadzenComponent
+@inject DialogService DialogService
+
+@code {
+    [Parameter] public SearchModel SearchModel { get; set; }
+    [Parameter] public EventCallback OnSearch { get; set; }
+    [Inject] DialogService Service { get; set; }
+
+    private async Task Search()
+    {
+        if (OnSearch.HasDelegate)
+        {
+            await OnSearch.InvokeAsync();
+        }
+
+        Service.CloseSide();
+    }
+
+    private void Clear()
+    {
+        SearchModel.Name = string.Empty;
+        SearchModel.Email = string.Empty;
+    }
+}
+
+<div class="rz-p-4">
+    <RadzenTemplateForm Data="@SearchModel" Submit="@((SearchModel args) => Search())">
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenLabel Text="Name" />
+                <RadzenTextBox @bind-Value="SearchModel.Name" Style="width: 100%;" />
+            </div>
+            <div class="col-md-12">
+                <RadzenLabel Text="Email" />
+                <RadzenTextBox @bind-Value="SearchModel.Email" Style="width: 100%;" />
+            </div>
+            <div class="col-md-12" style="margin-top: 2rem;">
+                <RadzenButton Text="Search" Icon="search" ButtonType="ButtonType.Submit" />
+                <RadzenButton Text="Clear" Icon="clear" Click="@Clear" />
+            </div>
+        </div>
+    </RadzenTemplateForm>
+</div>

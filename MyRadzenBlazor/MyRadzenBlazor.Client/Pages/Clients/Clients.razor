@@ -3,22 +3,17 @@
 @inject DialogService DialogService
 @inject NotificationService NotificationService
 <PageTitle>Clientes</PageTitle>
-<RadzenTemplateForm Data="@searchModel" Submit="@((SearchModel args) => SearchClients())">
-    <div class="row">
-        <div class="col-md-4">
-            <RadzenLabel Text="Name" />
-            <RadzenTextBox @bind-Value="searchModel.Name" Style="width: 100%;" />
-        </div>
-        <div class="col-md-4">
-            <RadzenLabel Text="Email" />
-            <RadzenTextBox @bind-Value="searchModel.Email" Style="width: 100%;" />
-        </div>
-        <div class="col-md-4" style="margin-top: 2rem;">
-            <RadzenButton Text="Search" Icon="search" ButtonType="ButtonType.Submit" />
-            <RadzenButton Text="Clear" Icon="clear" Click="@(args => ClearSearch())" />
-        </div>
-    </div>
-</RadzenTemplateForm>
+
+<RadzenRow JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Class="rz-mb-4">
+                <RadzenColumn Size="12" SizeSM="10">
+                    <RadzenText TextStyle="TextStyle.DisplayH5">Lista de Clientes</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">Veja os clientes que estão na sua base de dados</RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeSM="2">
+                    <RadzenButton Text="Add Client" Icon="add_circle" Click="@(args => AddClient())" Style="margin-top: 1rem;" />
+                    <RadzenButton Icon="filter_alt" Text="Filtro" Click="@OpenSideDialog" />
+                </RadzenColumn>
+</RadzenRow>
 
 <RadzenGrid @ref="grid"  PageSize="5" AllowPaging="true" AllowSorting="true" Data="@clients" TItem="ClientRequest" Count="@totalClients" LoadData="@LoadData" Style="margin-top: 1rem;">
     <Columns>
@@ -28,16 +23,32 @@
         <RadzenGridColumn TItem="ClientRequest" Property="Phone" Title="Phone" />
         <RadzenGridColumn TItem="ClientRequest" Title="Actions">
             <Template Context="client">
-                <RadzenButton Text="Edit" Icon="edit" Click="@(args => EditClient(client))" Style="margin-right: 0.5rem;" />
-                <RadzenButton Text="Delete" Icon="delete" Click="@(args => ConfirmDelete(client))" ButtonStyle="ButtonStyle.Danger" />
+                <RadzenButton Icon="edit" Click="@(args => EditClient(client))" Style="margin-right: 0.5rem;" />
+                <RadzenButton Icon="delete" Click="@(args => ConfirmDelete(client))" ButtonStyle="ButtonStyle.Danger" />
             </Template>
         </RadzenGridColumn>
     </Columns>
 </RadzenGrid>
 
-<RadzenButton Text="Add Client" Icon="add_circle" Click="@(args => AddClient())" Style="margin-top: 1rem;" />
+
 
 @code {
+    private async Task OpenSideDialog()
+    {
+        var options = new SideDialogOptions
+        {
+            CloseDialogOnOverlayClick = true,
+            Position = DialogPosition.Right,
+            ShowMask = true
+        };
+
+        await DialogService.OpenSideAsync<ClientFilterDialog>("Filter", new Dictionary<string, object>
+        {
+            { "SearchModel", searchModel },
+            { "OnSearch", EventCallback.Factory.Create(this, SearchClients) }
+        }, options);
+    }
+
     private List<ClientRequest> clients;
     private int totalClients;
     private SearchModel searchModel = new SearchModel();

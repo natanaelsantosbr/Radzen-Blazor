@@ -28,11 +28,11 @@
 <RadzenTemplateForm Data="@Client" Submit="@((ClientRequest args) => HandleSubmit())">
     <RadzenFieldset Text="Client Details">
         <RadzenLabel Text="Name" />
-        <RadzenTextBox @bind-Value="Client.Name" Style="width: 100%;" />
+        <RadzenTextBox @bind-Value="Client.Name" Style="width: 100%;" required />
         <RadzenLabel Text="Email" />
-        <RadzenTextBox @bind-Value="Client.Email" Style="width: 100%;" />
+        <RadzenTextBox @bind-Value="Client.Email" Style="width: 100%;" required />
         <RadzenLabel Text="Phone" />
-        <RadzenTextBox @bind-Value="Client.Phone" Style="width: 100%;" />
+        <RadzenTextBox @bind-Value="Client.Phone" Style="width: 100%;" required />
     </RadzenFieldset>
     <RadzenButton Text="Save" Type="Submit" Icon="save" Style="margin-right: 0.5rem;" />
     <RadzenButton Text="Cancel" Click="@Cancel" ButtonStyle="ButtonStyle.Danger" />
