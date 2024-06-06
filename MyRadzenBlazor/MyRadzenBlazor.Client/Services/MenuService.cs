@@ -11,10 +11,11 @@ namespace MyRadzenBlazor.Client.Services
         {
             menuItems = new List<MenuItem>
             {
-                new MenuItem { Text = "Home", Icon = "home", Path = "", IsNew = true },
-                new MenuItem { Text = "Dashboard", Icon = "dashboard", Path = "dashboard", IsUpdated = true },
-                new MenuItem { Text = "Counter", Icon = "alarm", Path = "counter" },
-                new MenuItem { Text = "Weather", Icon = "build", Path = "weather" },
+                new MenuItem { Text = "Home", Icon = "home", Path = "dashboard", IsNew = true },
+                new MenuItem { Text = "Clientes", Icon = "groups", Path = "clients", IsUpdated = true },
+                new MenuItem { Text = "Products", Icon = "category", Path = "product-search" },
+                new MenuItem { Text = "TemplateForm", Icon = "contact_mail", Path = "TemplateForm" },
+                new MenuItem { Text = "Login", Icon = "login", Path = "login" },
                 new MenuItem
                 {
                     Text = "Layout", Icon = "dns", Children = new List<MenuItem>
@@ -23,32 +24,9 @@ namespace MyRadzenBlazor.Client.Services
                         new MenuItem { Text = "Row", Icon = "line_weight", Path = "row" },
                         new MenuItem { Text = "Column", Icon = "line_style", Path = "column" }
                     }
-                },
-                new MenuItem
-                {
-                    Text = "Navigation", Icon = "navigation", Children = new List<MenuItem>
-                    {
-                        new MenuItem { Text = "Login", Icon = "login", Path = "login" }
-                    }
-                },
-                new MenuItem
-                {
-                    Text = "Forms", Icon = "table_rows", Children = new List<MenuItem>
-                    {
-                        new MenuItem { Text = "Clientes", Icon = "groups", Path = "clients" },
-                        new MenuItem { Text = "Products", Icon = "category", Path = "product-search" },
-                        new MenuItem { Text = "TemplateForm", Icon = "contact_mail", Path = "TemplateForm" }
-                    }
-                },
-                new MenuItem { Text = "Usuários", Icon = "person", Path = "users" },
-                new MenuItem { Text = "Relatórios", Icon = "bar_chart", Path = "reports" },
-                new MenuItem { Text = "Configurações", Icon = "settings", Path = "settings" },
-                new MenuItem { Text = "Notificações", Icon = "notifications", Path = "notifications" },
-                new MenuItem { Text = "Pedidos", Icon = "shopping_cart", Path = "orders" },
-                new MenuItem { Text = "Inventário", Icon = "inventory", Path = "inventory" },
-                new MenuItem { Text = "Financeiro", Icon = "account_balance", Path = "finance" },
-                new MenuItem { Text = "Suporte", Icon = "support", Path = "support" },
-                new MenuItem { Text = "Perfil do Usuário", Icon = "account_circle", Path = "profile" }
+                },               
+                new MenuItem { Text = "Counter", Icon = "alarm", Path = "counter" },
+                new MenuItem { Text = "Weather", Icon = "build", Path = "weather" }
             };
         }
 
