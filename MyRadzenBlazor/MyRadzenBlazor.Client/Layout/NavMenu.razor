@@ -14,53 +14,86 @@
 <RadzenPanelMenu>
     @foreach (var item in FilteredMenuItems)
     {
-        <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon" Path="@item.Path" Expanded="@item.Expanded">
-            <Template>
-                @item.Text
-                @if (item.IsNew)
-                {
-                    <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
-                }
-                @if (item.IsUpdated)
-                {
-                    <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
-                }
-            </Template>
-            <ChildContent>
-                @if (item.Children != null && item.Children.Any())
-                {
-                    @foreach (var child in item.Children)
+        if (item.Children != null && item.Children.Any())
+        {
+            <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon" Path="@item.Path" Expanded="@item.Expanded">
+                <Template>
+                    @item.Text
+                    @if (item.IsNew)
                     {
-                        if (MenuService.IsMatch(child, searchText))
+                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
+                    }
+                    @if (item.IsUpdated)
+                    {
+                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
+                    }
+                </Template>
+                <ChildContent>
+                    @if (item.Children != null && item.Children.Any())
+                    {
+                        @foreach (var child in item.Children)
                         {
-                            <RadzenPanelMenuItem Text="@child.Text" Icon="@child.Icon" Path="@child.Path">
-                                <Template>
-                                    @child.Text
-                                    @if (child.IsNew)
-                                    {
-                                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
-                                    }
-                                    @if (child.IsUpdated)
-                                    {
-                                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
-                                    }
-                                </Template>
-                            </RadzenPanelMenuItem>
+                            if (MenuService.IsMatch(child, searchText))
+                            {
+                                <RadzenPanelMenuItem Text="@child.Text" Icon="@child.Icon" Path="@child.Path" Click="@(() => OnMenuItemClick(item))">
+                                    <Template>
+                                        @child.Text
+                                        @if (child.IsNew)
+                                        {
+                                            <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
+                                        }
+                                        @if (child.IsUpdated)
+                                        {
+                                            <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
+                                        }
+                                    </Template>
+                                </RadzenPanelMenuItem>
+                            }
                         }
                     }
-                }
-            </ChildContent>
-        </RadzenPanelMenuItem>
+                </ChildContent>
+            </RadzenPanelMenuItem>
+        }
+        else
+        {
+            <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon" Path="@item.Path" Expanded="@item.Expanded">
+                <Template>
+                    @item.Text
+                    @if (item.IsNew)
+                    {
+                        <RadzenBadge Text="New" BadgeStyle="BadgeStyle.Info" Class="custom-badge" />
+                    }
+                    @if (item.IsUpdated)
+                    {
+                        <RadzenBadge Text="Updated" BadgeStyle="BadgeStyle.Success" Class="custom-badge" />
+                    }
+                </Template>
+            </RadzenPanelMenuItem>
+        }
+
+
+
     }
 </RadzenPanelMenu>
 
 @code {
     private string searchText = string.Empty;
 
+    [Parameter]
+    public EventCallback OnMenuItemClicked { get; set; }
+
     private IEnumerable<MenuItem> FilteredMenuItems => MenuService.GetFilteredMenuItems(searchText);
 
     private void OnInput(ChangeEventArgs e)
     {
         searchText = e.Value.ToString();
+    }
+
+    private async Task OnMenuItemClick(MenuItem item)
+    {
+        if (OnMenuItemClicked.HasDelegate)
+        {
+            await OnMenuItemClicked.InvokeAsync(null);
+        }
     }
 }

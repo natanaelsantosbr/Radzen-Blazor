@@ -32,24 +32,37 @@
         </ChildContent>
     </RadzenHeader>
     <RadzenSidebar @bind-Expanded="@sidebar1Expanded">
-        <NavMenu />
+        <NavMenu OnMenuItemClicked="HandleMenuItemClick" />
     </RadzenSidebar>
     <RadzenBody>
         <div class="rz-p-4">
             @Body
         </div>
     </RadzenBody>
-
-
+    <RadzenMediaQuery Query="(max-width: 767px)" Change="@OnMediaQueryChange" />
 </RadzenLayout>
 
 @code {
     bool sidebar1Expanded = true;
+    bool isSmallScreen = false;
 
     private async Task Logout()
-    {        
+    {
         NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Logout Realizado", Detail = "Você saiu do sistema com sucesso." });
         NavigationManager.NavigateTo("/login");
+    }
+
+    private void OnMediaQueryChange(bool matches)
+    {
+        isSmallScreen = matches;
+    }
+
+    private void HandleMenuItemClick()
+    {
+        if (isSmallScreen)
+        {
+            sidebar1Expanded = false;
+        }
     }
 
     void OnClick(RadzenSplitButtonItem item)
