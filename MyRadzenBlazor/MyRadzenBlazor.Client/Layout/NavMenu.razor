@@ -56,7 +56,7 @@
         }
         else
         {
-            <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon" Path="@item.Path" Expanded="@item.Expanded">
+            <RadzenPanelMenuItem Text="@item.Text" Icon="@item.Icon" Path="@item.Path" Expanded="@item.Expanded" Click="@(() => OnMenuItemClick(item))">
                 <Template>
                     @item.Text
                     @if (item.IsNew)
